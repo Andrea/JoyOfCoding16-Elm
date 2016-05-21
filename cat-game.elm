@@ -1,10 +1,13 @@
 import Color exposing (..)
-import Graphics.Collage exposing (..)
-import Graphics.Element exposing (..)
+import Collage exposing (..)
+import Element exposing (..)
 import Keyboard
 import Time exposing (..)
 import Window
 import List exposing (map, concat, indexedMap, head, drop)
+import Html exposing (Html)
+
+import Html.App as Html -- well this is weird? how can this possibly work?
 
 -- MODEL
 
@@ -114,10 +117,10 @@ movePlayer dir model =
   let
     checkPc default pc =
       let
-        x = pc.x |> Debug.watch "pc x"
-        y = pc.y |> Debug.watch "pc y"
-        idx = getTileIdxFromPosition (pc.x, pc.y) |> Debug.watch "idx"
-        tile = getListIdx idx model.grid |> Debug.watch "tile"
+        x = pc.x --|> Debug.watch "pc x"
+        y = pc.y --|> Debug.watch "pc y"
+        idx = getTileIdxFromPosition (pc.x, pc.y) --|> Debug.watch "idx"
+        tile = getListIdx idx model.grid --Debug.watch "tile"
       in
         case tile of
           Nothing -> pc
@@ -178,9 +181,24 @@ view (w',h') mario =
           |> move position
       ]
 
+init : Model
+init = 
+    { x = 1.0
+  , y = 2.0
+  , vx = 1.0
+  , vy = 1.0
+  , dir = Up
+  }
 
--- SIGNALS
+main =  
+  Html.program
+    { init = init
+    , update = update
+    , view = view
+    , subscriptions = \_ -> Sub.none
+    }
 
+{-
 main : Signal Element
 main =
   Signal.map2 view Window.dimensions (Signal.foldp update cat input)
@@ -192,3 +210,4 @@ input =
     delta = Signal.map (\t -> t/20) (fps 30)
   in
     Signal.sampleOn delta (Signal.map2 (,) delta Keyboard.arrows)
+-}
