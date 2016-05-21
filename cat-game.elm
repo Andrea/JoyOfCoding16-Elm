@@ -126,13 +126,7 @@ movePlayer dir model =
           Nothing -> pc
           Just tilet -> if tilet == NoCollision then pc else default
     updatePc pc dir =
-      pc
-    {- case dir of
-       Up ->  { pc |  y = pc.y + 1,dir = Up }
-       Down -> { pc | y = pc.y - 1, dir = Down }
-        Left -> { pc | x = pc.x - 1, dir = Left }
-        Right -> { pc | x = pc.x + 1, dir = Right }
-        None -> pc  -}
+      pc   
   in
     { model | pc = (checkPc model.pc (updatePc model.pc dir)) }
       
@@ -197,17 +191,3 @@ main =
     , view = view
     , subscriptions = \_ -> Sub.none
     }
-
-{-
-main : Signal Element
-main =
-  Signal.map2 view Window.dimensions (Signal.foldp update cat input)
-
-
-input : Signal (Float, Keys)
-input =
-  let
-    delta = Signal.map (\t -> t/20) (fps 30)
-  in
-    Signal.sampleOn delta (Signal.map2 (,) delta Keyboard.arrows)
--}
