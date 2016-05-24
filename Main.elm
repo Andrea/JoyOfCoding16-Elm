@@ -24,26 +24,31 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   (model, Cmd.none)
 
+playerScore : number
 playerScore = 122
 
 view : Model -> Html Msg
 view model =
   div [] [
-    (div [] [Html.Element txt (Text.height 50) "The Joy of cats"]),
+    (div [] [txt (Text.height 50) "The Joy of cats"]),
     (div [] [Html.text  ("Score " ++  (playerScore |> toString)) ]),
     (div [] [Html.text "GAME HERE" ]),
     (div [] [Html.text "Footer"])
   ]
 
+textGreen : Color
 textGreen =
   rgb 160 200 160
 
+txt: (Text.Text -> Text.Text) -> String -> Html string
 txt f string =
   Text.fromString string
     |> Text.color textGreen
     |> Text.monospace
     |> f
     |> leftAligned
+    |> toHtml
+
 
 main =
   App.program
