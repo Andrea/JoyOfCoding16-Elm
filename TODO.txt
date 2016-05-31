@@ -1,0 +1,6 @@
+
+TODO
+
+- layout
+- render graphics
+- encode events
