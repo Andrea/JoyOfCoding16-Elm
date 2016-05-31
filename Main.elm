@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import AnimationFrame
 import Char
 import Collage exposing (..)
 import Color exposing (..)
@@ -32,6 +33,7 @@ type alias Model =
 type Msg
     = WindowSize Window.Size
     | KeyboardExtraMsg Keyboard.Extra.Msg
+    | Tick Time.Time
 
 
 init : ( Model, Cmd Msg )
@@ -67,10 +69,27 @@ update msg model =
             let
                 ( keyboardModel, keyboardCmd ) =
                     Keyboard.Extra.update keyMsg model.keyboardModel
+
+                direction =
+                    case Keyboard.Extra.arrowsDirection keyboardModel of
+                        Keyboard.Extra.West ->
+                            Left
+
+                        Keyboard.Extra.East ->
+                            Right
+
+                        _ ->
+                            model.dir
             in
-                ( { model | keyboardModel = keyboardModel }
+                ( { model
+                    | keyboardModel = keyboardModel
+                    , dir = direction
+                  }
                 , Cmd.map KeyboardExtraMsg keyboardCmd
                 )
+
+        Tick delta ->
+            ( model, Cmd.none )
 
 
 playerScore : number
@@ -108,6 +127,7 @@ subscriptions model =
     Sub.batch
         [ Window.resizes WindowSize
         , Sub.map KeyboardExtraMsg Keyboard.Extra.subscriptions
+        , AnimationFrame.diffs (Tick << inSeconds)
         ]
 
 
