@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Char
 import Color exposing (..)
 import Collage exposing (..)
 import Element exposing (..)
@@ -11,6 +12,7 @@ import List exposing (map, concat, indexedMap, head, drop)
 import Html exposing (Html, div, text)
 import Html.App as App
 import Task.Extra
+import Keyboard.Extra
 
 
 type Direction
@@ -19,21 +21,38 @@ type Direction
 
 
 type alias Model =
-    { x : Float, y : Float, dir : Direction, windowSize : Window.Size }
+    { x : Float
+    , y : Float
+    , dir : Direction
+    , windowSize : Window.Size
+    , keyboardModel : Keyboard.Extra.Model
+    }
 
 
 type Msg
     = WindowSize Window.Size
+    | KeyboardExtraMsg Keyboard.Extra.Msg
 
 
 init : ( Model, Cmd Msg )
 init =
     let
+        ( keyboardModel, keyboardCmd ) =
+            Keyboard.Extra.init
+
         model =
-            { x = 1.0, y = 2.0, dir = Right, windowSize = Window.Size 0 0 }
+            { x = 1.0
+            , y = 2.0
+            , dir = Right
+            , windowSize = Window.Size 0 0
+            , keyboardModel = keyboardModel
+            }
 
         cmd =
-            Window.size |> Task.Extra.performFailproof WindowSize
+            Cmd.batch
+                [ Window.size |> Task.Extra.performFailproof WindowSize
+                , Cmd.map KeyboardExtraMsg keyboardCmd
+                ]
     in
         ( model, cmd )
 
@@ -43,6 +62,15 @@ update msg model =
     case msg of
         WindowSize newSize ->
             ( { model | windowSize = newSize }, Cmd.none )
+
+        KeyboardExtraMsg keyMsg ->
+            let
+                ( keyboardModel, keyboardCmd ) =
+                    Keyboard.Extra.update keyMsg model.keyboardModel
+            in
+                ( { model | keyboardModel = keyboardModel }
+                , Cmd.map KeyboardExtraMsg keyboardCmd
+                )
 
 
 playerScore : number
@@ -55,7 +83,7 @@ view model =
     div []
         [ (div [] [ txt (Text.height 50) "The Joy of cats" ])
         , (div [] [ Html.text ("Score " ++ (playerScore |> toString)) ])
-        , (div [] [ Html.text "GAME HERE" ])
+        , (div [] [ Html.text (toString model) ])
         , (div [] [ Html.text "Footer" ])
         ]
 
@@ -77,7 +105,10 @@ txt f string =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Window.resizes WindowSize
+    Sub.batch
+        [ Window.resizes WindowSize
+        , Sub.map KeyboardExtraMsg Keyboard.Extra.subscriptions
+        ]
 
 
 main : Program Never
