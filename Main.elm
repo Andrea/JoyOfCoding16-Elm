@@ -8,21 +8,28 @@ import Window
 import List exposing (map, concat, indexedMap, head, drop)
 import Html exposing (Html, div, text)
 import Html.App as App
+import Task.Extra
 
 type Direction = Left | Right
 
 type alias Model =
-    { x : Float, y : Float, dir : Direction }
+    { x : Float, y : Float, dir : Direction, windowSize : Window.Size }
 
-type Msg = NoOp
+type Msg = WindowSize Window.Size
 
 init : (Model, Cmd Msg)
 init =
-  ({ x = 1.0, y = 2.0, dir = Right }, Cmd.none)
+    let
+        model = { x = 1.0, y = 2.0, dir = Right, windowSize = Window.Size 0 0 }
+        cmd = Window.size |> Task.Extra.performFailproof WindowSize
+    in
+        (model, cmd)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  (model, Cmd.none)
+  case msg of
+      WindowSize newSize ->
+          ( { model | windowSize = newSize }, Cmd.none)
 
 playerScore : number
 playerScore = 122
@@ -50,10 +57,15 @@ txt f string =
     |> toHtml
 
 
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Window.resizes WindowSize
+
+main : Program Never
 main =
   App.program
         { init = init
         , update = update
         , view = view
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = subscriptions
         }
