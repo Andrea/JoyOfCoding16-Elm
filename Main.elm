@@ -25,6 +25,7 @@ type alias Model =
     { x : Float
     , y : Float
     , dir : Direction
+    , playerScore : Float
     , windowSize : Window.Size
     , keyboardModel : Keyboard.Extra.Model
     }
@@ -46,6 +47,7 @@ init =
             { x = 1.0
             , y = 2.0
             , dir = Right
+            , playerScore = 0
             , windowSize = Window.Size 0 0
             , keyboardModel = keyboardModel
             }
@@ -89,22 +91,22 @@ update msg model =
                 )
 
         Tick delta ->
-            ( model, Cmd.none )
-
-
-playerScore : number
-playerScore =
-    122
+            ( { model | playerScore = model.playerScore + delta }, Cmd.none )
 
 
 view : Model -> Html Msg
 view model =
     div []
         [ (div [] [ txt (Text.height 50) "The Joy of cats" ])
-        , (div [] [ Html.text ("Score " ++ (playerScore |> toString)) ])
-        , (div [] [ Html.text (toString model) ])
+        , (div [] [ Html.text ("Score " ++ ((round model.playerScore) |> toString)) ])
+        , (div [] [ renderGame model ])
         , (div [] [ Html.text "Footer" ])
         ]
+
+
+renderGame : Model -> Html Msg
+renderGame model =
+    div [] [ Html.text (toString model.dir) ]
 
 
 textGreen : Color
