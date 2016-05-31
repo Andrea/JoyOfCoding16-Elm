@@ -1,18 +1,18 @@
 module Main exposing (..)
 
 import Char
-import Color exposing (..)
 import Collage exposing (..)
+import Color exposing (..)
 import Element exposing (..)
-import Keyboard
-import Time exposing (..)
-import Text
-import Window
-import List exposing (map, concat, indexedMap, head, drop)
 import Html exposing (Html, div, text)
 import Html.App as App
-import Task.Extra
+import Keyboard
 import Keyboard.Extra
+import List exposing (map, concat, indexedMap, head, drop)
+import Task.Extra
+import Text
+import Time exposing (..)
+import Window
 
 
 type Direction
