@@ -13,6 +13,7 @@ import List exposing (map, concat, indexedMap, head, drop)
 import Task.Extra
 import Text
 import Time exposing (..)
+import Transform
 import Window
 
 
@@ -21,10 +22,20 @@ type Direction
     | Right
 
 
-type alias Model =
+type alias Cat =
     { x : Float
     , y : Float
     , dir : Direction
+    }
+
+
+type alias Level =
+    {}
+
+
+type alias Model =
+    { cat : Cat
+    , level : Level
     , playerScore : Float
     , windowSize : Window.Size
     , keyboardModel : Keyboard.Extra.Model
@@ -44,9 +55,9 @@ init =
             Keyboard.Extra.init
 
         model =
-            { x = 1.0
-            , y = 2.0
-            , dir = Right
+            -- For brevity use the model constructors instead of {} for Cat and Window.Size
+            { cat = Cat 0 0 Right
+            , level = Level
             , playerScore = 0
             , windowSize = Window.Size 0 0
             , keyboardModel = keyboardModel
@@ -54,6 +65,8 @@ init =
 
         cmd =
             Cmd.batch
+                -- Normally We'd have to handle success and failure cases for the task, but here
+                -- we can use performFailproof as we know this will never fail.
                 [ Window.size |> Task.Extra.performFailproof WindowSize
                 , Cmd.map KeyboardExtraMsg keyboardCmd
                 ]
@@ -81,11 +94,17 @@ update msg model =
                             Right
 
                         _ ->
-                            model.dir
+                            model.cat.dir
+
+                cat =
+                    model.cat
+
+                newCat =
+                    { cat | dir = direction }
             in
                 ( { model
                     | keyboardModel = keyboardModel
-                    , dir = direction
+                    , cat = newCat
                   }
                 , Cmd.map KeyboardExtraMsg keyboardCmd
                 )
@@ -106,7 +125,25 @@ view model =
 
 renderGame : Model -> Html Msg
 renderGame model =
-    div [] [ Html.text (toString model.dir) ]
+    let
+        transformation =
+            case model.cat.dir of
+                Left ->
+                    Transform.identity
+
+                Right ->
+                    -- flip it
+                    Transform.matrix -1 0 0 1 0 0
+    in
+        div []
+            [ Collage.collage 150
+                150
+                [ Collage.groupTransform transformation
+                    [ Element.image 150 150 "animated-kitty.gif" |> Collage.toForm
+                    ]
+                ]
+                |> Element.toHtml
+            ]
 
 
 textGreen : Color
