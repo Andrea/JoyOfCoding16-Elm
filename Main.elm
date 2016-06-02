@@ -17,9 +17,9 @@ import Window
 
 
 type Direction
-    = Left
+    = None
     | Right
-
+    | Left
 
 type alias Model =
     { x : Float
@@ -46,7 +46,7 @@ init =
         model =
             { x = 1.0
             , y = 2.0
-            , dir = Right
+            , dir = None
             , playerScore = 0
             , windowSize = Window.Size 0 0
             , keyboardModel = keyboardModel
