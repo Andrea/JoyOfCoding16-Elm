@@ -1,6 +1,6 @@
 
 TODO
 
-- layout
+- layout (Andrea)
 - render graphics
 - encode events

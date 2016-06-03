@@ -26,12 +26,13 @@ type alias Cat =
     { x : Float
     , y : Float
     , dir : Direction
+    , velocityX: Float
+--    , velocityY : Float
     }
 
 
 type alias Level =
     {}
-
 
 type alias Model =
     { cat : Cat
@@ -47,7 +48,6 @@ type Msg
     | KeyboardExtraMsg Keyboard.Extra.Msg
     | Tick Time.Time
 
-
 init : ( Model, Cmd Msg )
 init =
     let
@@ -56,7 +56,7 @@ init =
 
         model =
             -- For brevity use the model constructors instead of {} for Cat and Window.Size
-            { cat = Cat 0 0 Right
+            { cat = Cat 0 0 Right 0
             , level = Level
             , playerScore = 0
             , windowSize = Window.Size 0 0
@@ -73,7 +73,6 @@ init =
     in
         ( model, cmd )
 
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -84,21 +83,13 @@ update msg model =
             let
                 ( keyboardModel, keyboardCmd ) =
                     Keyboard.Extra.update keyMsg model.keyboardModel
-
                 direction =
                     case Keyboard.Extra.arrowsDirection keyboardModel of
-                        Keyboard.Extra.West ->
-                            Left
+                        Keyboard.Extra.West -> Left
+                        Keyboard.Extra.East -> Right
+                        _ -> model.cat.dir
 
-                        Keyboard.Extra.East ->
-                            Right
-
-                        _ ->
-                            model.cat.dir
-
-                cat =
-                    model.cat
-
+                cat = model.cat
                 newCat =
                     { cat | dir = direction }
             in
@@ -110,8 +101,35 @@ update msg model =
                 )
 
         Tick delta ->
+
             ( { model | playerScore = model.playerScore + delta }, Cmd.none )
 
+step : Float -> Model -> Model
+step delta model =
+  model
+--    |> gravity dt
+--    |> jump
+    |> walk
+--    |> physics dt
+
+
+walk : Model -> Model
+walk model =
+  let
+    cat = model.cat
+    keyz = Keyboard.Extra.arrows model.keyboardModel
+    newCat = {cat |
+                velocityX =  (toFloat keyz.x)/5
+                , dir =
+                         case Keyboard.Extra.arrowsDirection model.keyboardModel of
+                             Keyboard.Extra.West -> Left
+                             Keyboard.Extra.East -> Right
+                             _ -> model.cat.dir
+                   }
+  in
+    { model |
+       cat = newCat
+    }
 
 view : Model -> Html Msg
 view model =
@@ -119,7 +137,7 @@ view model =
         [ (div [] [ txt (Text.height 50) "The Joy of cats" ])
         , (div [] [ Html.text ("Score " ++ ((round model.playerScore) |> toString)) ])
         , (div [] [ renderGame model ])
-        , (div [] [ Html.text "Footer" ])
+        , (div [] [ Html.text "Footer here | (c)Cats united of the world" ])
         ]
 
 
@@ -130,10 +148,11 @@ renderGame model =
             case model.cat.dir of
                 Left ->
                     Transform.identity
-
                 Right ->
                     -- flip it
                     Transform.matrix -1 0 0 1 0 0
+                None ->
+                  Transform.identity
     in
         div []
             [ Collage.collage 150
@@ -150,7 +169,6 @@ textGreen : Color
 textGreen =
     rgb 160 200 160
 
-
 txt : (Text.Text -> Text.Text) -> String -> Html string
 txt f string =
     Text.fromString string
@@ -159,7 +177,6 @@ txt f string =
         |> f
         |> leftAligned
         |> toHtml
-
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
