@@ -91,8 +91,6 @@ updateKeys keyMsg model=
         }
 
 
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -110,11 +108,37 @@ update msg model =
 step : Float -> Model -> Model
 step delta model =
   model
---    |> gravity delta
+    |> gravity delta
 --    |> jump
     |> walk
---    |> physics dt
+    |> physics delta
 
+
+gravity : Float -> Model -> Model
+gravity dt model =
+  let
+    cat = model.cat
+    newCat = { cat |
+                velocityY = if cat.y > 0 then cat.velocityY - dt/40 else 0
+             }
+  in
+  { model |
+      cat = newCat
+  }
+
+
+physics : Float -> Model -> Model
+physics dt model =
+  let
+    cat = model.cat
+    newCat = { cat |
+                x = cat.x + dt * cat.velocityX,
+                y = max 0 (cat.y  + dt/10 * cat.velocityY)
+             }
+  in
+    { model |
+       cat = newCat
+    }
 
 walk : Model -> Model
 walk model =
