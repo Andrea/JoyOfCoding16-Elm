@@ -16,7 +16,6 @@ import Time exposing (..)
 import Transform
 import Window
 
-
 type Direction
     = None
     | Right
@@ -27,9 +26,8 @@ type alias Cat =
     , y : Float
     , dir : Direction
     , velocityX: Float
---    , velocityY : Float
+    , velocityY : Float
     }
-
 
 type alias Level =
     {}
@@ -41,7 +39,6 @@ type alias Model =
     , windowSize : Window.Size
     , keyboardModel : Keyboard.Extra.Model
     }
-
 
 type Msg
     = WindowSize Window.Size
@@ -56,7 +53,7 @@ init =
 
         model =
             -- For brevity use the model constructors instead of {} for Cat and Window.Size
-            { cat = Cat 0 0 Right 0
+            { cat = Cat 0 0 Right 0 0
             , level = Level
             , playerScore = 0
             , windowSize = Window.Size 0 0
@@ -73,6 +70,29 @@ init =
     in
         ( model, cmd )
 
+updateKeys : Keyboard.Extra.Msg -> Model -> Model
+updateKeys keyMsg model=
+  let
+      ( keyboardModel, keyboardCmd ) =
+          Keyboard.Extra.update keyMsg model.keyboardModel
+      direction =
+          case Keyboard.Extra.arrowsDirection keyboardModel of
+              Keyboard.Extra.West -> Left
+              Keyboard.Extra.East -> Right
+              _ -> model.cat.dir
+
+      cat = model.cat
+      newCat =
+          { cat | dir = direction }
+  in
+       { model
+          | keyboardModel = keyboardModel
+          , cat = newCat
+        }
+
+
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -80,34 +100,17 @@ update msg model =
             ( { model | windowSize = newSize }, Cmd.none )
 
         KeyboardExtraMsg keyMsg ->
-            let
-                ( keyboardModel, keyboardCmd ) =
-                    Keyboard.Extra.update keyMsg model.keyboardModel
-                direction =
-                    case Keyboard.Extra.arrowsDirection keyboardModel of
-                        Keyboard.Extra.West -> Left
-                        Keyboard.Extra.East -> Right
-                        _ -> model.cat.dir
-
-                cat = model.cat
-                newCat =
-                    { cat | dir = direction }
-            in
-                ( { model
-                    | keyboardModel = keyboardModel
-                    , cat = newCat
-                  }
-                , Cmd.map KeyboardExtraMsg keyboardCmd
-                )
+            (updateKeys keyMsg model, Cmd.none)
 
         Tick delta ->
+              (step delta model, Cmd.none)
 
-            ( { model | playerScore = model.playerScore + delta }, Cmd.none )
+            --( { model | playerScore = model.playerScore + delta }, Cmd.none )
 
 step : Float -> Model -> Model
 step delta model =
   model
---    |> gravity dt
+--    |> gravity delta
 --    |> jump
     |> walk
 --    |> physics dt
