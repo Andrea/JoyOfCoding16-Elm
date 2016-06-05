@@ -3,118 +3,43 @@ module Level exposing (..)
 import Element exposing (..)
 import Html exposing (..)
 import Html.App as App
+import Map
 
 
 type alias Model =
-    {}
+    { map : Map.Map }
 
 
 type Msg
     = None
 
 
-{-| A tile can be solid (requires collision detection) or empty
--}
-type Tile
-    = Solid Element
-    | Empty Element
-
-
-type alias Row =
-    List Tile
-
-
-type alias Map =
-    List Row
-
-
-map : Map
-map =
-    let
-        e = Empty emptyTile
-        c = Solid crateTile
-    in
-        [ [ e, e, e, e, e, e, e ]
-        , [ e, e, e, e, e, e, e ]
-        , [ e, e, e, e, e, c, e ]
-        , [ e, c, e, e, c, c, e ]
-        ]
-
-getElementFromTile : Tile -> Element
-getElementFromTile tile =
-    case tile of
-        Solid element -> element
-        Empty element -> element
-
-mapSize : Map -> ( Int, Int )
-mapSize map =
-    let
-        ( tileWidth, tileHeight ) =
-            tileSize
-
-        row =
-            case List.head map of
-                Nothing ->
-                    []
-
-                Just row ->
-                    row
-    in
-        ( List.length row * tileWidth, List.length map * tileHeight )
-
-
 init : ( Model, Cmd Msg )
 init =
-    Model ! []
-
-
-tileSize : ( Int, Int )
-tileSize =
-    ( 100, 100 )
-
-
-makeTile : (Int -> Int -> tile) -> tile
-makeTile tile =
-    let
-        ( w, h ) =
-            tileSize
-    in
-        tile w h
-
-
-tileImage : String -> Element
-tileImage img =
-    img |> makeTile image
-
-
-crateTile : Element
-crateTile =
-    tileImage "images/obj_box002.png"
-
-
-emptyTile : Element
-emptyTile =
-    makeTile spacer
+    Model Map.init ! []
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     model ! []
 
-renderMap : Map -> Element
+
+renderMap : Map.Map -> Element
 renderMap map =
-    List.map (List.map getElementFromTile >> flow right) map
-    |> flow down
+    List.map (List.map Map.getElementFromTile >> flow right) map
+        |> flow down
+
 
 render : Int -> Int -> Model -> Html Msg
 render width height model =
     let
-        (w, h) = mapSize map
+        ( w, h ) =
+            Map.mapSize model.map
     in
         div []
             [ layers
                 [ tiledImage w h "images/Wall.png"
-                , renderMap map
+                , renderMap model.map
                 ]
                 |> toHtml
             ]
