@@ -53,6 +53,7 @@ type Msg
     | KeyboardExtraMsg Keyboard.Extra.Msg
     | Tick Time.Time
     | Play
+    | GameOver
 
 init : ( Model, Cmd Msg )
 init =
@@ -108,6 +109,10 @@ update msg model =
             ( { model | phase = GamePhase }
             , Cmd.none )
 
+        GameOver ->
+            ( { model | phase = GameOverPhase }
+            , Cmd.none )
+
         WindowSize newSize ->
             ( { model | windowSize = newSize }, Cmd.none )
 
@@ -116,8 +121,7 @@ update msg model =
 
         Tick delta ->
               (step delta model, Cmd.none)
-
-            --( { model | playerScore = model.playerScore + delta }, Cmd.none )
+            -- ( { model | playerScore = model.playerScore + delta }, Cmd.none )
 
 step : Float -> Model -> Model
 step delta model =
@@ -186,7 +190,7 @@ view model =
             div [] [ ( renderMenu model ) ]
 
         GameOverPhase ->
-            div [] [ Html.text "GameOver" ]
+            div [] [ ( renderGameOver model ) ]
 
 renderMenu : Model -> Html Msg
 renderMenu model =
@@ -202,6 +206,20 @@ renderMenu model =
                       ]
             [ Html.text "Play"]
         ]
+
+renderGameOver : Model -> Html Msg
+renderGameOver model =
+    div [ attribute "style" "width: 300px; margin-left: auto; margin-right: auto;" ]
+        [ p [ attribute "style" "font-size: 60px; width: 300px; font-style:italic; font-weight:bold; font-family:Arial; color: #3366ff; te
+xt-shadow:0px 1px 0px #0033cc; text-align: center; margin-left: auto; margin-right: auto;" ]
+            [ Html.text "GAME OVER!" ]
+        , img [ attribute "src" "images/gameover.jpg"
+              , attribute "width" "300px"
+              , attribute "height" "300px"
+              ] []
+        , p [] [Html.text ("Your score is " ++ (toString model.playerScore))]
+        ]
+
 
 renderGame : Model -> Html Msg
 renderGame model =
