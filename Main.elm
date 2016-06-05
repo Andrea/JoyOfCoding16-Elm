@@ -194,25 +194,19 @@ view model =
 
 renderMenu : Model -> Html Msg
 renderMenu model =
-    div [ attribute "style" "width: 300px; margin-left: auto; margin-right: auto;"]
-        [ p [ attribute "style" "font-size: 60px; width: 300px; font-style:italic; font-weight:bold; font-family:Arial; color: #3366ff; text-shadow:0px 1px 0px #0033cc; text-align: center; margin-left: auto; margin-right: auto;" ]
-              [ Html.text "CAT RUN!" ]
+    div [ attribute "style" centeredDivStyle ]
+        [ p [ attribute "style" titleStyle ] [ Html.text "CAT RUN!" ]
         , img [ attribute "src" "images/splash.jpg"
               , attribute "width" "300px"
               , attribute "height" "300px"
               ] []
-        , Html.button [ onClick Play
-                      , attribute "style" "width: 300px; background-color:#44c767;-moz-border-radius:28px;-webkit-border-radius:28px;border-radius:28px;border:1px solid #18ab29;display:inline-block;cursor:pointer;color:#ffffff;font-family:Arial;font-size:17px;font-weight:bold;font-style:italic;padding:16px 31px;text-decoration:none;text-shadow:0px 1px 0px #2f6627"
-                      ]
-            [ Html.text "Play"]
+        , Html.button [ onClick Play, attribute "style" menuButtonStyle ] [ Html.text "Play"]
         ]
 
 renderGameOver : Model -> Html Msg
 renderGameOver model =
-    div [ attribute "style" "width: 300px; margin-left: auto; margin-right: auto;" ]
-        [ p [ attribute "style" "font-size: 60px; width: 300px; font-style:italic; font-weight:bold; font-family:Arial; color: #3366ff; te
-xt-shadow:0px 1px 0px #0033cc; text-align: center; margin-left: auto; margin-right: auto;" ]
-            [ Html.text "GAME OVER!" ]
+    div [ attribute "style" centeredDivStyle ]
+        [ p [ attribute "style" titleStyle ] [ Html.text "GAME OVER!" ]
         , img [ attribute "src" "images/gameover.jpg"
               , attribute "width" "300px"
               , attribute "height" "300px"
@@ -220,6 +214,15 @@ xt-shadow:0px 1px 0px #0033cc; text-align: center; margin-left: auto; margin-rig
         , p [] [Html.text ("Your score is " ++ (toString model.playerScore))]
         ]
 
+titleStyle : String
+titleStyle = "font-size: 60px; width: 300px; font-style:italic; font-weight:bold; font-family:Arial; color: #3366ff; text-shadow:0px 1px 0px #0033cc; text-align: center; margin-left: auto; margin-right: auto;"
+
+menuButtonStyle : String
+menuButtonStyle = "width: 300px; background-color:#44c767;-moz-border-radius:28px;-webkit-border-radius:28px;border-radius:28\
+px;border:1px solid #18ab29;display:inline-block;cursor:pointer;color:#ffffff;font-family:Arial;font-size:17px;font-weight:bold;font-style:italic;padding:16px 31px;text-decoration:none;text-shadow:0px 1px 0px #2f6627"
+
+centeredDivStyle : String
+centeredDivStyle = "width: 300px; margin-left: auto; margin-right: auto;"
 
 renderGame : Model -> Html Msg
 renderGame model =
