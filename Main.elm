@@ -5,7 +5,9 @@ import Char
 import Collage exposing (..)
 import Color exposing (..)
 import Element exposing (..)
-import Html exposing (Html, div, text)
+import Html exposing (Html, div, text, p, img)
+import Html.Attributes exposing (attribute)
+import Html.Events exposing (onClick)
 import Html.App as App
 import Keyboard
 import Keyboard.Extra
@@ -38,12 +40,19 @@ type alias Model =
     , playerScore : Float
     , windowSize : Window.Size
     , keyboardModel : Keyboard.Extra.Model
+    , phase : GamePhase
     }
+
+type GamePhase -- it needed to include '-Phase' because having Main.Menu produces odd errors
+    = MenuPhase
+    | GamePhase
+    | GameOverPhase
 
 type Msg
     = WindowSize Window.Size
     | KeyboardExtraMsg Keyboard.Extra.Msg
     | Tick Time.Time
+    | Play
 
 init : ( Model, Cmd Msg )
 init =
@@ -58,6 +67,7 @@ init =
             , playerScore = 0
             , windowSize = Window.Size 0 0
             , keyboardModel = keyboardModel
+            , phase = MenuPhase
             }
 
         cmd =
@@ -94,6 +104,10 @@ updateKeys keyMsg model=
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Play ->
+            ( { model | phase = GamePhase }
+            , Cmd.none )
+
         WindowSize newSize ->
             ( { model | windowSize = newSize }, Cmd.none )
 
@@ -160,13 +174,29 @@ walk model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ (div [] [ txt (Text.height 50) "The Joy of cats" ])
-        , (div [] [ Html.text ("Score " ++ ((round model.playerScore) |> toString)) ])
-        , (div [] [ renderGame model ])
-        , (div [] [ Html.text "Footer here | (c)Cats united of the world" ])
-        ]
+    case model.phase of
+        GamePhase ->
+            div []
+                [ (div [] [ txt (Text.height 50) "The Joy of cats" ])
+                , (div [] [ Html.text ("Score " ++ ((round model.playerScore) |> toString)) ])
+                , (div [] [ renderGame model ])
+                , (div [] [ Html.text "Footer here | (c)Cats united of the world" ])
+                ]
+        MenuPhase ->
+            div [] [ ( renderMenu model ) ]
 
+        GameOverPhase ->
+            div [] [ Html.text "GameOver" ]
+
+renderMenu : Model -> Html Msg
+renderMenu model =
+    div [] [ p [] [ Html.text "CAT RUN!" ]
+           , img [ attribute "src" "images/splash.jpg"
+                 , attribute "width" "300px"
+                 , attribute "height" "300px"
+                 ] []
+           , Html.button [ onClick Play ] [Html.text "Play"]
+           ]
 
 renderGame : Model -> Html Msg
 renderGame model =
