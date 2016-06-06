@@ -9,11 +9,9 @@ import Html.Attributes exposing (attribute)
 import Html.Events exposing (onClick)
 import Html.App as App
 import Keyboard.Extra
--- import List exposing (map, concat, indexedMap, head, drop)
 import Task.Extra
 import Text
 import Time exposing (..)
-import Transform
 import Window
 
 type Direction
@@ -137,7 +135,6 @@ gravity delta model =
     newCat = { cat |
                 velocityY = if cat.y > 0 then cat.velocityY - delta  * 20 else 0
              }
-    -- _ = Debug.log "cat" newCat
   in
   { model |
       cat = newCat
@@ -151,7 +148,6 @@ physics delta model =
                 x = cat.x + delta * cat.velocityX,
                 y = max 0 (cat.y  + delta * cat.velocityY * 35)
              }
-
   in
     { model |
        cat = newCat
@@ -164,11 +160,11 @@ jump model =
       newCat = { cat |
                 velocityY = 15.0 }
       keyz = Keyboard.Extra.isPressed Keyboard.Extra.Space model.keyboardModel
-      -- _ = Debug.log "asdas" newCat
   in
-
     if keyz && cat.velocityY == 0 then { model | cat = newCat } else model
 
+walkMulti : Float
+walkMulti = 300
 
 walk : Model -> Model
 walk model =
@@ -176,7 +172,7 @@ walk model =
     cat = model.cat
     keyz = Keyboard.Extra.arrows model.keyboardModel
     newCat = {cat |
-                velocityX =  (toFloat keyz.x)* 100
+                velocityX =  (toFloat keyz.x) * walkMulti
                 , dir =
                          case Keyboard.Extra.arrowsDirection model.keyboardModel of
                              Keyboard.Extra.West -> Left
@@ -193,7 +189,7 @@ view model =
     case model.phase of
         GamePhase ->
             div []
-                [ (div [] [ txt (Text.height 50) "The Joy of cats" ])
+                [ (div [] [ txt (Text.height 40) "The Joy of cats" ])
                 , (div [] [ Html.text ("Score " ++ ((round model.playerScore) |> toString)) ])
                 , (div [] [ renderGame model ])
                 , (div [] [ Html.text "Footer here | (c)Cats united of the world" ])
@@ -240,29 +236,12 @@ renderGame : Model -> Html Msg
 renderGame model =
     let
         cat = model.cat
-        transformation =
-            case model.cat.dir of
-                Left ->
-                    Transform.identity
-                Right ->
-                    -- flip it
-                    Transform.matrix -1 0 0 1 0 0
-
-                None ->
-                  Transform.identity
-        --_ = Debug.log "cat" cat`
     in
         div []
-            [ collage  800 500
-
-                -- rect 800 50
-                --     |> filled (rgb 74 167 43)
-                --     |> move (0, 24 - 500/2)
-                -- |> to
-                -- ,
+            [ collage  640 480
                 [ image 70 70 "animated-kitty.gif"
                       |> toForm
-                      |> move (cat.x + 50, cat.y + 50)
+                      |> move (cat.x , cat.y )
                 ]
                 |> Element.toHtml
             ]
