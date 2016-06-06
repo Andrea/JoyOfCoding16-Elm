@@ -27,12 +27,9 @@ type alias Cat =
     , velocityY : Float
     }
 
-type alias Level =
-    {}
 
 type alias Model =
     { cat : Cat
-    , level : Level
     , playerScore : Float
     , windowSize : Window.Size
     , keyboardModel : Keyboard.Extra.Model
@@ -59,8 +56,7 @@ init =
 
         model =
             -- For brevity use the model constructors instead of {} for Cat and Window.Size
-            { cat = Cat 0 0 Right 0 0
-            , level = Level
+            { cat = Cat 0 0 Right 0 0            
             , playerScore = 0
             , windowSize = Window.Size 0 0
             , keyboardModel = keyboardModel
