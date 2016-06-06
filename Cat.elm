@@ -115,16 +115,16 @@ update msg model =
 renderCat : Model -> Element.Element
 renderCat model =
     let
-        ( state, extension ) =
+        state =
             case model.cat.state of
                 Running ->
-                    ( "running", ".gif" )
+                    "running"
 
                 Standing ->
-                    ( "standing", ".png" )
+                    "standing"
 
                 Jumping ->
-                    ( "jumping", ".png" )
+                    "jumping"
 
         direction =
             case model.cat.direction of
@@ -134,7 +134,7 @@ renderCat model =
                 Right ->
                     "right"
     in
-        Element.image 100 100 ("images/cat-" ++ state ++ "-" ++ direction ++ extension)
+        Element.image 100 100 ("images/cat-" ++ state ++ "-" ++ direction ++ ".gif")
 
 
 view : Model -> Html.Html Msg
