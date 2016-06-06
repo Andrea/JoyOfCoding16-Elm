@@ -147,8 +147,6 @@ type Msg
     = None
 
 
-{-| Testing sprite rendering and bounding boxes
--}
 main : Html.Html Msg
 main =
     let

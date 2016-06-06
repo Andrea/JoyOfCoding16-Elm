@@ -235,7 +235,7 @@ renderGame model =
     in
         div []
             [ collage  640 480
-                [ image 70 70 "animated-kitty.gif"
+                [ image 70 70 "images/cat-running-right.gif"
                       |> toForm
                       |> move (cat.x, cat.y)
                 ]

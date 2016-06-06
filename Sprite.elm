@@ -98,7 +98,7 @@ main =
             init (Element.image 100 100 "images/obj_box002.png") 200 0
 
         sprite3 =
-            init (Element.image 100 100 "animated-kitty.gif") 10 0
+            init (Element.image 100 100 "images/cat-running-right.gif") 10 0
     in
         Html.div []
             [ Element.layers
