@@ -135,7 +135,7 @@ gravity delta model =
   let
     cat = model.cat
     newCat = { cat |
-                velocityY = if cat.y > 0 then cat.velocityY - delta  *20 else 0
+                velocityY = if cat.y > 0 then cat.velocityY - delta  * 20 else 0
              }
     -- _ = Debug.log "cat" newCat
   in
@@ -149,9 +149,9 @@ physics delta model =
     cat = model.cat
     newCat = { cat |
                 x = cat.x + delta * cat.velocityX,
-                y = max 0 (cat.y  + delta * cat.velocityY * 20)
+                y = max 0 (cat.y  + delta * cat.velocityY * 35)
              }
-    -- _ = Debug.log "cat physics" newCat        
+
   in
     { model |
        cat = newCat
@@ -162,7 +162,7 @@ jump model =
   let
       cat = model.cat
       newCat = { cat |
-                velocityY = 100.0 }
+                velocityY = 15.0 }
       keyz = Keyboard.Extra.isPressed Keyboard.Extra.Space model.keyboardModel
       -- _ = Debug.log "asdas" newCat
   in
