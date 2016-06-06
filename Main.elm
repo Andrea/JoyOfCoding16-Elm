@@ -13,16 +13,23 @@ import Task.Extra
 import Text
 import Time exposing (..)
 import Window
+import String
 
 type Direction
     = None
     | Right
     | Left
 
+type CatAction
+  = Standing
+  | Walk
+  | Jummp
+
 type alias Cat =
     { x : Float
     , y : Float
     , dir : Direction
+    , action : CatAction
     , velocityX: Float
     , velocityY : Float
     }
@@ -56,7 +63,7 @@ init =
 
         model =
             -- For brevity use the model constructors instead of {} for Cat and Window.Size
-            { cat = Cat 0 0 Right 0 0
+            { cat = Cat 0 0 Right Standing 0 0
             , playerScore = 0
             , windowSize = Window.Size 0 0
             , keyboardModel = keyboardModel
@@ -231,13 +238,21 @@ centeredDivStyle = "width: 300px; margin-left: auto; margin-right: auto;"
 renderGame : Model -> Html Msg
 renderGame model =
     let
-        cat = model.cat
+        newCat = model.cat
+        verb = newCat.action
+        newDir = toString newCat.dir
+
+        imagePath = if verb == Standing then
+            "images/cat-"  ++ (toString verb) ++ ".gif" |> String.toLower
+          else "images/cat-"  ++ (toString verb) ++ "-" ++ newDir ++ ".gif" |> String.toLower
+
+        _ = Debug.log "Path " imagePath
     in
         div []
             [ collage  640 480
-                [ image 70 70 "images/cat-running-right.gif"
+                [ image 70 70 imagePath
                       |> toForm
-                      |> move (cat.x, cat.y)
+                      |> move (newCat.x, newCat.y)
                 ]
                 |> Element.toHtml
             ]
