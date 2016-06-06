@@ -56,7 +56,7 @@ init =
 
         model =
             -- For brevity use the model constructors instead of {} for Cat and Window.Size
-            { cat = Cat 0 0 Right 0 0            
+            { cat = Cat 0 0 Right 0 0
             , playerScore = 0
             , windowSize = Window.Size 0 0
             , keyboardModel = keyboardModel
@@ -129,7 +129,7 @@ gravity delta model =
   let
     cat = model.cat
     newCat = { cat |
-                velocityY = if cat.y > 0 then cat.velocityY - delta  * 20 else 0
+                velocityY = if cat.y > 0 then cat.velocityY - delta * 20 else 0
              }
   in
   { model |
@@ -188,7 +188,7 @@ view model =
                 [ (div [] [ txt (Text.height 40) "The Joy of cats" ])
                 , (div [] [ Html.text ("Score " ++ ((round model.playerScore) |> toString)) ])
                 , (div [] [ renderGame model ])
-                , (div [] [ Html.text "Footer here | (c)Cats united of the world" ])
+                , (div [] [ Html.text "Footer here | (c) Cats united of the world" ])
                 ]
         MenuPhase ->
             div [] [ ( renderMenu model ) ]
@@ -237,7 +237,7 @@ renderGame model =
             [ collage  640 480
                 [ image 70 70 "animated-kitty.gif"
                       |> toForm
-                      |> move (cat.x , cat.y )
+                      |> move (cat.x, cat.y)
                 ]
                 |> Element.toHtml
             ]
