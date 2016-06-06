@@ -14,8 +14,8 @@ init =
     Model Map.init
 
 
-render : Int -> Int -> Model -> Html Msg
-render width height model =
+render : Model -> Html Msg
+render model =
     let
         ( w, h ) =
             Map.mapSize model.map
@@ -35,4 +35,4 @@ type Msg
 
 main : Html.Html Msg
 main =
-    div [] [ render 800 400 init ]
+    div [] [ render init ]

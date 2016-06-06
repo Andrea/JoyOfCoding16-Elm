@@ -1,0 +1,150 @@
+module MiniGame exposing (..)
+
+{-| Cut down game, with level and basic collision detection
+
+Main character is an exciting box
+-}
+
+import Collage
+import Collision
+import Color
+import Element
+import Html
+import Html.App
+import Keyboard.Extra
+import Level
+import Map
+
+
+type alias Cat =
+    { x : Float, y : Float }
+
+
+type alias Model =
+    { cat : Cat
+    , level : Level.Model
+    , keyboardModel : Keyboard.Extra.Model
+    }
+
+
+type Msg
+    = KeyboardExtraMsg Keyboard.Extra.Msg
+    | Level Level.Msg
+
+
+init : ( Model, Cmd Msg )
+init =
+    let
+        ( keyboardModel, keyboardCmd ) =
+            Keyboard.Extra.init
+
+        model =
+            { cat = Cat 0 0
+            , level = Level.init
+            , keyboardModel = keyboardModel
+            }
+    in
+        model
+            ! [ Cmd.map KeyboardExtraMsg keyboardCmd
+              ]
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        KeyboardExtraMsg keyboardMsg ->
+            let
+                ( keyboardModel, keyboardCmd ) =
+                    Keyboard.Extra.update keyboardMsg model.keyboardModel
+
+                arrows =
+                    Keyboard.Extra.arrows keyboardModel
+                        |> Debug.log "arrows"
+
+                cat =
+                    model.cat
+
+                newX =
+                    cat.x + toFloat arrows.x * 100
+
+                newY =
+                    cat.y + toFloat arrows.y * 100
+
+                _ =
+                    Debug.log "newXY" ( newX, newY )
+
+                collisionX =
+                    Collision.checkCollision model.level.map ( newX, cat.y )
+
+                collisionY =
+                    Collision.checkCollision model.level.map ( cat.y, newY )
+
+                newCat =
+                    case ( collisionX, collisionY ) of
+                        ( Nothing, Nothing ) ->
+                            { cat | x = newX, y = newY }
+
+                        ( Just _, Nothing ) ->
+                            { cat | y = newY }
+
+                        ( Nothing, Just _ ) ->
+                            { cat | x = newX }
+
+                        _ ->
+                            cat
+            in
+                { model | cat = newCat, keyboardModel = keyboardModel } ! [ Cmd.map KeyboardExtraMsg keyboardCmd ]
+
+        _ ->
+            model ! []
+
+
+renderCat : Int -> Int -> Model -> Element.Element
+renderCat levelWidth levelHeight model =
+    let
+        element =
+            Collage.collage 100
+                100
+                [ Collage.rect 100 100
+                    |> Collage.filled Color.red
+                ]
+    in
+        Element.container levelWidth
+            levelHeight
+            (Element.bottomLeftAt (Element.absolute (floor model.cat.x))
+                (Element.absolute (floor model.cat.y))
+            )
+            element
+
+
+view : Model -> Html.Html Msg
+view model =
+    let
+        ( w, h ) =
+            Map.mapSize model.level.map
+    in
+        Html.div []
+            [ Element.layers
+                [ Element.tiledImage w h "images/Wall.png"
+                , Map.renderMap model.level.map
+                , renderCat w h model
+                ]
+                |> Element.toHtml
+            ]
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.batch
+        [ Sub.map KeyboardExtraMsg Keyboard.Extra.subscriptions
+        ]
+
+
+main : Program Never
+main =
+    Html.App.program
+        { init = init
+        , update = update
+        , view = view
+        , subscriptions = subscriptions
+        }

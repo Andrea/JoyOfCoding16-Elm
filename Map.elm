@@ -121,8 +121,9 @@ getTileAtPosition map ( x, y ) =
         rowIndex =
             floor (y / toFloat tileHeight)
 
-        -- _ =
-        --     Debug.log "x,y -> position" ( ( x, y ), ( colIndex, rowIndex ) )
+        _ =
+            Debug.log "x,y -> position" ( ( x, y ), ( colIndex, rowIndex ) )
+
         -- Helper to get at a particular index in a list, alternative -s |> List.drop idx |> List.head
         get idx =
             \list -> List.head (List.drop idx list)
