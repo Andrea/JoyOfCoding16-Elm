@@ -123,7 +123,7 @@ getTileAtPosition map ( x, y ) =
 
         -- _ =
         --     Debug.log "x,y -> position" ( ( x, y ), ( colIndex, rowIndex ) )
-        -- Helper to get at a particular index in a list
+        -- Helper to get at a particular index in a list, alternative -s |> List.drop idx |> List.head
         get idx =
             \list -> List.head (List.drop idx list)
     in
@@ -137,7 +137,8 @@ getTileAtPosition map ( x, y ) =
 
 renderMap : Map -> Element
 renderMap map =
-    List.map (List.map getElementFromTile >> flow right) map
+    map
+        |> List.map (List.map getElementFromTile >> flow right)
         |> flow down
 
 
