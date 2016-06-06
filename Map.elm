@@ -31,10 +31,10 @@ init =
         c =
             Solid crateTile
     in
-        [ [ e, e, e, e, e, e, e ]
-        , [ e, e, e, e, e, e, e ]
-        , [ e, e, e, e, e, c, e ]
-        , [ e, c, e, e, c, c, e ]
+        [ [ e, e, e, e, e, e, e, e, e ]
+        , [ e, e, e, e, e, e, e, e, e ]
+        , [ e, e, e, e, e, e, c, e, e ]
+        , [ e, e, c, e, e, c, c, e, e ]
         ]
 
 
