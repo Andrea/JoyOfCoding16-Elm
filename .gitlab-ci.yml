@@ -11,5 +11,6 @@ build.docker:
     - shell
   stage: build
   script:
+    - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} gitlab.twomeylee.name:7443
     - docker build -t ${TAG} .
     - docker push ${TAG}
