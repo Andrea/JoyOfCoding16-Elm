@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import AnimationFrame
-import Char
+-- import Char
 import Collage exposing (..)
 import Color exposing (..)
 import Element exposing (..)
@@ -9,9 +9,9 @@ import Html exposing (Html, div, text, p, img)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (onClick)
 import Html.App as App
-import Keyboard
+-- import Keyboard
 import Keyboard.Extra
-import List exposing (map, concat, indexedMap, head, drop)
+-- import List exposing (map, concat, indexedMap, head, drop)
 import Task.Extra
 import Text
 import Time exposing (..)
@@ -164,13 +164,14 @@ walk model =
     cat = model.cat
     keyz = Keyboard.Extra.arrows model.keyboardModel
     newCat = {cat |
-                velocityX =  (toFloat keyz.x)/5
+                velocityX =  (toFloat keyz.x)* 100
                 , dir =
                          case Keyboard.Extra.arrowsDirection model.keyboardModel of
                              Keyboard.Extra.West -> Left
                              Keyboard.Extra.East -> Right
                              _ -> model.cat.dir
                    }
+                   |> Debug.log "Monkeys"
   in
     { model |
        cat = newCat
@@ -235,23 +236,25 @@ renderGame model =
                 Right ->
                     -- flip it
                     Transform.matrix -1 0 0 1 0 0
+
                 None ->
                   Transform.identity
+        --_ = Debug.log "cat" cat`
     in
         div []
-            [ collage 800 500
-                [
-                rect 800 50
-                    |> filled (rgb 74 167 43)
-                    |> move (0, 24 - 500/2)
-                , --groupTransform transformation
-                  image 70 70 "animated-kitty.gif"
+            [ collage  800 500
+
+                -- rect 800 50
+                --     |> filled (rgb 74 167 43)
+                --     |> move (0, 24 - 500/2)
+                -- |> to
+                -- ,
+                [ image 70 70 "animated-kitty.gif"
                       |> toForm
-                      |> move (cat.x, cat.y + 50)
+                      |> move (cat.x + 50, cat.y + 50)
                 ]
                 |> Element.toHtml
             ]
-
 
 textGreen : Color
 textGreen =
