@@ -68,7 +68,7 @@ init =
             , playerScore = 0
             , windowSize = Window.Size 0 0
             , keyboardModel = keyboardModel
-            , phase = MenuPhase
+            , phase = GamePhase --MenuPhase
             }
 
         cmd =
@@ -195,7 +195,7 @@ view model =
 renderMenu : Model -> Html Msg
 renderMenu model =
     div [ attribute "style" centeredDivStyle ]
-        [ p [ attribute "style" titleStyle ] [ Html.text "CAT RUN!" ]
+        [ p [ attribute "style" titleStyle ] [ Html.text "The joy of cats!" ]
         , img [ attribute "src" "images/splash.jpg"
               , attribute "width" "300px"
               , attribute "height" "300px"
@@ -227,6 +227,7 @@ centeredDivStyle = "width: 300px; margin-left: auto; margin-right: auto;"
 renderGame : Model -> Html Msg
 renderGame model =
     let
+        cat = model.cat
         transformation =
             case model.cat.dir of
                 Left ->
@@ -238,11 +239,15 @@ renderGame model =
                   Transform.identity
     in
         div []
-            [ Collage.collage 150
-                150
-                [ Collage.groupTransform transformation
-                    [ Element.image 150 150 "animated-kitty.gif" |> Collage.toForm
-                    ]
+            [ collage 800 500
+                [
+                rect 800 50
+                    |> filled (rgb 74 167 43)
+                    |> move (0, 24 - 500/2)
+                , --groupTransform transformation
+                  image 70 70 "animated-kitty.gif"
+                      |> toForm
+                      |> move (cat.x, cat.y + 50)
                 ]
                 |> Element.toHtml
             ]
