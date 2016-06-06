@@ -1,0 +1,15 @@
+stages:
+  - build
+
+variables:
+  TAG: gitlab.twomeylee.name:7443/cats/cat-tree:$CI_BUILD_REF_NAME-$CI_BUILD_REF
+  DOCKER_REGISTRY: gitlab.twomeylee.name:7443
+
+build.docker:
+  tags:
+    - x86_64
+    - shell
+  stage: build
+  script:
+    - docker build -t ${TAG} .
+    - docker push ${TAG}
