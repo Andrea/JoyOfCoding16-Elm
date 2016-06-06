@@ -242,9 +242,11 @@ renderGame model =
         verb = newCat.action
         newDir = toString newCat.dir
 
-        imagePath = if verb == Standing then
-            "images/cat-"  ++ (toString verb) ++ ".gif" |> String.toLower
-          else "images/cat-"  ++ (toString verb) ++ "-" ++ newDir ++ ".gif" |> String.toLower
+        imagePath =
+          --  if verb == Standing then
+          --   "images/cat-"  ++ (toString verb) ++ ".gif" |> String.toLower
+          -- else 
+            "images/cat-"  ++ (toString verb) ++ "-" ++ newDir ++ ".gif" |> String.toLower
 
         _ = Debug.log "Path " imagePath
     in
