@@ -99,7 +99,6 @@ updateKeys keyMsg model=
           , cat = newCat
         }
 
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
 
@@ -120,7 +119,7 @@ update msg model =
 
         Tick delta ->
               (step delta model, Cmd.none)
-            -- ( { model | playerScore = model.playerScore + delta }, Cmd.none )
+
 
 step : Float -> Model -> Model
 step delta model =
@@ -136,21 +135,23 @@ gravity delta model =
   let
     cat = model.cat
     newCat = { cat |
-                velocityY = if cat.y > 0 then cat.velocityY - delta/40 else 0
+                velocityY = if cat.y > 0 then cat.velocityY - delta  *20 else 0
              }
+    -- _ = Debug.log "cat" newCat
   in
   { model |
       cat = newCat
   }
 
 physics : Float -> Model -> Model
-physics dt model =
+physics delta model =
   let
     cat = model.cat
     newCat = { cat |
-                x = cat.x + dt * cat.velocityX,
-                y = max 0 (cat.y  + dt/10 * cat.velocityY)
+                x = cat.x + delta * cat.velocityX,
+                y = max 0 (cat.y  + delta * cat.velocityY * 20)
              }
+    -- _ = Debug.log "cat physics" newCat        
   in
     { model |
        cat = newCat
@@ -161,9 +162,9 @@ jump model =
   let
       cat = model.cat
       newCat = { cat |
-                velocityY = 60.0 }
+                velocityY = 100.0 }
       keyz = Keyboard.Extra.isPressed Keyboard.Extra.Space model.keyboardModel
-      _ = Debug.log "asdas" newCat
+      -- _ = Debug.log "asdas" newCat
   in
 
     if keyz && cat.velocityY == 0 then { model | cat = newCat } else model
