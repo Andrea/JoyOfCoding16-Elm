@@ -65,19 +65,19 @@ update msg model =
                     model.cat
 
                 newX =
-                    cat.x + toFloat arrows.x * 100
+                    cat.x + toFloat arrows.x * 10
 
                 newY =
-                    cat.y + toFloat arrows.y * 100
+                    cat.y + toFloat arrows.y * 10
 
                 _ =
-                    Debug.log "newXY" ( newX, newY )
+                    Debug.log "old -> new" ( (cat.x, cat.y), (newX, newY) )
 
                 collisionX =
                     Collision.checkCollision model.level.map ( newX, cat.y )
 
                 collisionY =
-                    Collision.checkCollision model.level.map ( cat.y, newY )
+                    Collision.checkCollision model.level.map ( cat.x, newY )
 
                 newCat =
                     case ( collisionX, collisionY ) of
