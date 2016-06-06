@@ -23,13 +23,6 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     model ! []
 
-
-renderMap : Map.Map -> Element
-renderMap map =
-    List.map (List.map Map.getElementFromTile >> flow right) map
-        |> flow down
-
-
 render : Int -> Int -> Model -> Html Msg
 render width height model =
     let
@@ -39,7 +32,7 @@ render width height model =
         div []
             [ layers
                 [ tiledImage w h "images/Wall.png"
-                , renderMap model.map
+                , Map.renderMap model.map
                 ]
                 |> toHtml
             ]

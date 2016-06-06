@@ -4,6 +4,7 @@ module Map exposing (..)
 -}
 
 import Element exposing (..)
+import Html
 
 
 {-| A tile can be solid (requires collision detection) or empty
@@ -105,6 +106,63 @@ emptyTile =
     makeTile spacer
 
 
+{-| Given an (x,y) co-ordinate, origin on bottom left, return the tile at that point.
+
+You can use this to test for collisions (e.g. get the tile at the edge in the direction of motion).
+
+TODO: Decide whether that's the best origin :)
+-}
 getTileAtPosition : Map -> ( Float, Float ) -> Tile
 getTileAtPosition map ( x, y ) =
-    Empty emptyTile
+    let
+        colIndex =
+            floor (x / toFloat tileWidth)
+
+        rowIndex =
+            floor (y / toFloat tileHeight)
+
+        -- _ =
+        --     Debug.log "x,y -> position" ( ( x, y ), ( colIndex, rowIndex ) )
+        -- Helper to get at a particular index in a list
+        get idx =
+            \list -> List.head (List.drop idx list)
+    in
+        map
+            |> List.reverse
+            |> get rowIndex
+            |> Maybe.withDefault []
+            |> get colIndex
+            |> Maybe.withDefault (Empty (tileImage "images/obj_crate001.png"))
+
+
+renderMap : Map -> Element
+renderMap map =
+    List.map (List.map getElementFromTile >> flow right) map
+        |> flow down
+
+
+type Msg
+    = None
+
+
+{-| Testing sprite rendering and bounding boxes
+-}
+main : Html.Html Msg
+main =
+    let
+        map =
+            init
+
+        tiles =
+            [ getTileAtPosition map ( 0, 0 )
+            , getTileAtPosition map ( 101.5, 99 )
+            , getTileAtPosition map ( 301.5, 120 )
+            ]
+    in
+        Html.div []
+            [ Element.layers
+                [ renderMap map
+                , List.map getElementFromTile tiles |> flow right
+                ]
+                |> Element.toHtml
+            ]
