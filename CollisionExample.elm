@@ -1,4 +1,4 @@
-module MiniGame exposing (..)
+module CollisionExample exposing (..)
 
 {-| Cut down game, with level and basic collision detection
 
