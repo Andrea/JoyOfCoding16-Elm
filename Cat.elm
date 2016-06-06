@@ -1,4 +1,4 @@
-module CollisionExample exposing (..)
+module Cat exposing (..)
 
 {-| Cut down game, with level and basic collision detection
 
