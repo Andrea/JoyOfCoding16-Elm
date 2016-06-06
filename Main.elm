@@ -1,7 +1,6 @@
 module Main exposing (..)
 
 import AnimationFrame
--- import Char
 import Collage exposing (..)
 import Color exposing (..)
 import Element exposing (..)
@@ -9,7 +8,6 @@ import Html exposing (Html, div, text, p, img)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (onClick)
 import Html.App as App
--- import Keyboard
 import Keyboard.Extra
 -- import List exposing (map, concat, indexedMap, head, drop)
 import Task.Extra
@@ -104,6 +102,7 @@ updateKeys keyMsg model=
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+
     case msg of
         Play ->
             ( { model | phase = GamePhase }
@@ -127,23 +126,22 @@ step : Float -> Model -> Model
 step delta model =
   model
     |> gravity delta
---    |> jump
+    |> jump
     |> walk
     |> physics delta
 
 
 gravity : Float -> Model -> Model
-gravity dt model =
+gravity delta model =
   let
     cat = model.cat
     newCat = { cat |
-                velocityY = if cat.y > 0 then cat.velocityY - dt/40 else 0
+                velocityY = if cat.y > 0 then cat.velocityY - delta/40 else 0
              }
   in
   { model |
       cat = newCat
   }
-
 
 physics : Float -> Model -> Model
 physics dt model =
@@ -158,6 +156,19 @@ physics dt model =
        cat = newCat
     }
 
+jump : Model -> Model
+jump model =
+  let
+      cat = model.cat
+      newCat = { cat |
+                velocityY = 60.0 }
+      keyz = Keyboard.Extra.isPressed Keyboard.Extra.Space model.keyboardModel
+      _ = Debug.log "asdas" newCat
+  in
+
+    if keyz && cat.velocityY == 0 then { model | cat = newCat } else model
+
+
 walk : Model -> Model
 walk model =
   let
@@ -171,7 +182,6 @@ walk model =
                              Keyboard.Extra.East -> Right
                              _ -> model.cat.dir
                    }
-                   |> Debug.log "Monkeys"
   in
     { model |
        cat = newCat
