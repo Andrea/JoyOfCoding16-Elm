@@ -12,7 +12,6 @@ import Element
 import Html
 import Html.App
 import Keyboard.Extra
-import Level
 import Map
 
 
@@ -22,14 +21,13 @@ type alias Cat =
 
 type alias Model =
     { cat : Cat
-    , level : Level.Model
+    , map : Map.Map
     , keyboardModel : Keyboard.Extra.Model
     }
 
 
 type Msg
     = KeyboardExtraMsg Keyboard.Extra.Msg
-    | Level Level.Msg
 
 
 init : ( Model, Cmd Msg )
@@ -40,7 +38,7 @@ init =
 
         model =
             { cat = Cat 0 0
-            , level = Level.init
+            , map = Map.init
             , keyboardModel = keyboardModel
             }
     in
@@ -71,13 +69,13 @@ update msg model =
                     cat.y + toFloat arrows.y * 10
 
                 _ =
-                    Debug.log "old -> new" ( (cat.x, cat.y), (newX, newY) )
+                    Debug.log "old -> new" ( ( cat.x, cat.y ), ( newX, newY ) )
 
                 collisionX =
-                    Collision.checkCollision model.level.map ( newX, cat.y )
+                    Collision.checkCollision model.map ( newX, cat.y )
 
                 collisionY =
-                    Collision.checkCollision model.level.map ( cat.x, newY )
+                    Collision.checkCollision model.map ( cat.x, newY )
 
                 newCat =
                     case ( collisionX, collisionY ) of
@@ -94,9 +92,6 @@ update msg model =
                             cat
             in
                 { model | cat = newCat, keyboardModel = keyboardModel } ! [ Cmd.map KeyboardExtraMsg keyboardCmd ]
-
-        _ ->
-            model ! []
 
 
 renderCat : Int -> Int -> Model -> Element.Element
@@ -121,12 +116,12 @@ view : Model -> Html.Html Msg
 view model =
     let
         ( w, h ) =
-            Map.mapSize model.level.map
+            Map.mapSize model.map
     in
         Html.div []
             [ Element.layers
                 [ Element.tiledImage w h "images/Wall.png"
-                , Map.renderMap model.level.map
+                , Map.renderMap model.map
                 , renderCat w h model
                 ]
                 |> Element.toHtml
