@@ -9,6 +9,7 @@ import Element
 import Html
 import Html.App
 import Keyboard.Extra
+import String
 
 
 type Direction
@@ -115,6 +116,8 @@ update msg model =
 renderCat : Model -> Element.Element
 renderCat model =
     let
+        -- Alternative (NB: don't know if toString is 100% guaranteed to always work this way)
+        -- state = toString model.cat.state |> String.toLower
         state =
             case model.cat.state of
                 Running ->
