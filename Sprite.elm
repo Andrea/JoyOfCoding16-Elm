@@ -33,11 +33,6 @@ type alias BoundingBox =
     }
 
 
-type Sprite
-    = Solid Model
-    | Empty Model
-
-
 getBoundingBox : Model -> BoundingBox
 getBoundingBox sprite =
     let
@@ -73,7 +68,6 @@ drawBoundingBox model =
 
         boundingBox =
             getBoundingBox model
-                |> Debug.log "boundingBox"
     in
         collage width
             height
@@ -84,7 +78,6 @@ drawBoundingBox model =
                 , ( boundingBox.maxX, boundingBox.minY )
                 , ( boundingBox.minX, boundingBox.minY )
                 ]
-                |> Debug.log "boundingBox Path"
                 |> traced { defaultLine | color = Color.red, width = 3 }
             ]
 
