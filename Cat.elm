@@ -12,6 +12,7 @@ import Keyboard.Extra
 import String
 
 
+{-| Cats can go left or right -}
 type Direction
     = Right
     | Left
@@ -65,7 +66,6 @@ update msg model =
 
                 arrows =
                     Keyboard.Extra.arrows keyboardModel
-                        |> Debug.log "arrows"
 
                 cat =
                     model.cat

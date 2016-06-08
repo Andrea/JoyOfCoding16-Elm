@@ -176,34 +176,18 @@ walk model =
 collision : Model -> Model -> Model
 collision oldModel newModel =
     let
+        toPlayer =
+            \cat -> { x = round cat.x, y = round cat.y, width = 100, height = 100 }
+
         cat =
             newModel.cat
 
-        ( oldX, oldY ) =
-            ( oldModel.cat.x, oldModel.cat.y )
-
-        ( newX, newY ) =
-            ( newModel.cat.x, newModel.cat.y )
-
-        collisionX =
-            Collision.checkCollision newModel.map ( newX, oldY )
-
-        collisionY =
-            Collision.checkCollision newModel.map ( oldX, newY )
+        fromPlayer =
+            \player -> { cat | x = toFloat player.x, y = toFloat player.y }
 
         newCat =
-            case ( collisionX, collisionY ) of
-                ( Nothing, Nothing ) ->
-                    { cat | x = newX, y = newY }
-
-                ( Just _, Nothing ) ->
-                    { cat | x = oldX, y = newY }
-
-                ( Nothing, Just _ ) ->
-                    { cat | x = newX, y = oldY }
-
-                _ ->
-                    cat
+            Collision.updateWithCollisionCheck newModel.map (toPlayer oldModel.cat) (toPlayer newModel.cat)
+                |> fromPlayer
     in
         { newModel | cat = newCat }
 
