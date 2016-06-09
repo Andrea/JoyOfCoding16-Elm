@@ -34,7 +34,7 @@ type alias Model =
     , map : Map.Map
     , keyboardModel : Keyboard.Extra.Model
     , kidPositionX : Int
-    , kidPositionY : Int
+    , elapsedGameTime : Float
     }
 
 
@@ -54,7 +54,7 @@ init =
             , map = Map.init
             , keyboardModel = keyboardModel
             , kidPositionX = 0
-            , kidPositionY = 0
+            , elapsedGameTime = 0
             }
     in
         model
@@ -84,21 +84,26 @@ step delta model =
         |> walk
         |> physics delta
         |> updateKid delta
+        |> updateElapsedGameTime delta
         |> collision model
 
-
+updateElapsedGameTime : Float -> Model -> Model
+updateElapsedGameTime delta model =
+    let
+      gameTime = model.elapsedGameTime + delta
+      _ = Debug.log "elapsed tiem" gameTime
+    in
+      { model
+          | elapsedGameTime = gameTime
+      }
 updateKid : Float -> Model -> Model
 updateKid delta model =
   let
-    newx = model.kidPositionX +  1
-    newY = model.kidPositionY +   5
-
+    newx = if ( model.elapsedGameTime > 5 ) then model.kidPositionX +  1 else model.kidPositionX
   in
       { model
           | kidPositionX = newx
       }
-
-
 
 gravity : Float -> Model -> Model
 gravity delta model =
