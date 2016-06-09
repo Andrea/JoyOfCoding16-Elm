@@ -1,6 +1,19 @@
 
-TODO
+Workshop examples todo:
 
-- layout (Andrea)
-- render graphics
-- encode events
+- (andrea) elm hello world (Basic program)
+- (mick) elm architecture
+- (andrea) menu (html)
+- (mick) draw a box (Collage + Element)
+- (mick) explain some of the quirks with Element & Collage
+- (andrea) move a box (Keyboard input)
+- (andrea) basic animation + physics (AnimationFrame)
+- (mick) slot something into the game loop (pipeline)
+
+
+Other possible stuff:
+
+- move into src dir?
+- Add some tests? (elm-test)
+- Remove other examples (cat-game.elm, pong.elm)
+- Remove un-used code
