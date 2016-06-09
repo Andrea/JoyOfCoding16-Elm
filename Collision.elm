@@ -28,12 +28,17 @@ type alias Player =
     , height : Int
     }
 
+type CollisionAxis =
+    Vertical
+    | Horizontal
+    | Both
+    | None
 
 {-| Perform a collision test of a player object against the map
 
 Will returned an adjusted Player based on collision testing.
 -}
-updateWithCollisionCheck : Map -> Player -> Player -> Player
+updateWithCollisionCheck : Map -> Player -> Player -> (Player, CollisionAxis)
 updateWithCollisionCheck map oldPlayer newPlayer =
     let
         boundingBoxX =
@@ -55,13 +60,13 @@ updateWithCollisionCheck map oldPlayer newPlayer =
     in
         case ( collideX, collideY ) of
             ( True, True ) ->
-                oldPlayer
+                (oldPlayer, Both)
 
             ( True, False ) ->
-                { newPlayer | x = oldPlayer.x }
+                ({ newPlayer | x = oldPlayer.x }, Horizontal)
 
             ( False, True ) ->
-                { newPlayer | y = oldPlayer.y }
+                ({ newPlayer | y = oldPlayer.y }, Vertical)
 
             _ ->
-                newPlayer
+                (newPlayer, None)
