@@ -19,6 +19,10 @@ type Direction
     | Right
     | Left
 
+type MovementState
+    = OnGround
+    | Falling
+    | OnBox
 
 type alias Cat =
     { x : Float
@@ -26,6 +30,7 @@ type alias Cat =
     , dir : Direction
     , velocityX : Float
     , velocityY : Float
+    , movement : MovementState
     }
 
 
@@ -50,7 +55,7 @@ init =
             Keyboard.Extra.init
 
         model =
-            { cat = Cat 0 0 Right 0 0
+            { cat = Cat 0 0 Right 0 0 OnGround
             , map = Map.init
             , keyboardModel = keyboardModel
             , kidPositionX = 0
@@ -114,10 +119,10 @@ gravity delta model =
         newCat =
             { cat
                 | velocityY =
-                    if cat.y > 0 then
-                        cat.velocityY - delta * 20
-                    else
-                        0
+                    case cat.movement of
+                        OnGround -> 0
+                        Falling -> cat.velocityY - delta * 20
+                        OnBox -> 0
             }
     in
         { model
@@ -131,10 +136,20 @@ physics delta model =
         cat =
             model.cat
 
+        newY = case cat.movement of
+            Falling -> max 0 (cat.y + delta * cat.velocityY * 35)
+            OnGround -> cat.y
+            OnBox -> cat.y
+
+        movement = case (cat.movement, newY) of
+            (Falling, 0) -> OnGround
+            _ -> cat.movement
+
         newCat =
             { cat
                 | x = cat.x + delta * cat.velocityX
-                , y = max 0 (cat.y + delta * cat.velocityY * 35)
+                , y = newY
+                , movement = movement
             }
     in
         { model
@@ -151,6 +166,7 @@ jump model =
         newCat =
             { cat
                 | velocityY = 15.0
+                , movement = Falling
             }
 
         keyz =
@@ -192,34 +208,28 @@ walk model =
 collision : Model -> Model -> Model
 collision oldModel newModel =
     let
+        toPlayer =
+            \cat -> { x = round cat.x, y = round cat.y, width = 100, height = 100 }
+
         cat =
             newModel.cat
 
-        ( oldX, oldY ) =
-            ( oldModel.cat.x, oldModel.cat.y )
+        fromPlayer =
+            \player -> { cat | x = toFloat player.x, y = toFloat player.y }
 
-        ( newX, newY ) =
-            ( newModel.cat.x, newModel.cat.y )
+        (player, collisionAxis) =
+            Collision.updateWithCollisionCheck newModel.map (toPlayer oldModel.cat) (toPlayer newModel.cat)
 
-        collisionX =
-            Collision.checkCollision newModel.map ( newX, oldY )
+        updatedCat = fromPlayer player
 
-        collisionY =
-            Collision.checkCollision newModel.map ( oldX, newY )
+        newMovement = case (collisionAxis, cat.movement) of
+            (Collision.Vertical, OnBox) -> OnBox
+            (Collision.None, OnBox) -> Falling
+            (Collision.Vertical, Falling) -> OnBox
+            (_, _) -> cat.movement
 
-        newCat =
-            case ( collisionX, collisionY ) of
-                ( Nothing, Nothing ) ->
-                    { cat | x = newX, y = newY }
 
-                ( Just _, Nothing ) ->
-                    { cat | x = oldX, y = newY }
-
-                ( Nothing, Just _ ) ->
-                    { cat | x = newX, y = oldY }
-
-                _ ->
-                    cat
+        newCat = { updatedCat | movement = newMovement}
     in
         { newModel | cat = newCat }
 
@@ -238,10 +248,15 @@ renderCat levelWidth levelHeight model =
                 None ->
                     "right"
 
+        state = case model.cat.movement of
+            Falling -> "running"
+            OnBox -> "running"
+            OnGround -> "running"
+
         element =
             Collage.collage 100
                 100
-                [ Element.image 100 100 ("images/cat-running-" ++ direction ++ ".gif")
+                [ Element.image 100 100 ("images/cat-" ++ state ++ "-" ++ direction ++ ".gif")
                     |> Collage.toForm
                 ]
     in
