@@ -71,7 +71,7 @@ update msg model =
                 newY =
                     cat.y + arrows.y * 10
 
-                newCat =
+                (newCat, _) =
                     { cat | x = newX, y = newY }
                         |> Collision.updateWithCollisionCheck model.map cat
             in
