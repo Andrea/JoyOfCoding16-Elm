@@ -91,11 +91,11 @@ updateElapsedGameTime : Float -> Model -> Model
 updateElapsedGameTime delta model =
     let
       gameTime = model.elapsedGameTime + delta
-      _ = Debug.log "elapsed tiem" gameTime
     in
       { model
           | elapsedGameTime = gameTime
       }
+
 updateKid : Float -> Model -> Model
 updateKid delta model =
   let
@@ -162,11 +162,6 @@ jump model =
             model
 
 
-walkMulti : Float
-walkMulti =
-    300
-
-
 walk : Model -> Model
 walk model =
     let
@@ -174,6 +169,8 @@ walk model =
             model.cat
         keyz =
             Keyboard.Extra.arrows model.keyboardModel
+        walkMulti =
+                300
         newCat =
             { cat
                 | velocityX = (toFloat keyz.x) * walkMulti
