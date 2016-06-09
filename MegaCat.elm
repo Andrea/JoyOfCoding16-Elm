@@ -33,6 +33,8 @@ type alias Model =
     { cat : Cat
     , map : Map.Map
     , keyboardModel : Keyboard.Extra.Model
+    , kidPositionX : Int
+    , kidPositionY : Int
     }
 
 
@@ -51,6 +53,8 @@ init =
             { cat = Cat 0 0 Right 0 0
             , map = Map.init
             , keyboardModel = keyboardModel
+            , kidPositionX = 0
+            , kidPositionY = 0
             }
     in
         model
@@ -79,7 +83,21 @@ step delta model =
         |> jump
         |> walk
         |> physics delta
+        |> updateKid delta
         |> collision model
+
+
+updateKid : Float -> Model -> Model
+updateKid delta model =
+  let
+    newx = model.kidPositionX +  1
+    newY = model.kidPositionY +   5
+
+  in
+      { model
+          | kidPositionX = newx
+      }
+
 
 
 gravity : Float -> Model -> Model
@@ -149,10 +167,8 @@ walk model =
     let
         cat =
             model.cat
-
         keyz =
             Keyboard.Extra.arrows model.keyboardModel
-
         newCat =
             { cat
                 | velocityX = (toFloat keyz.x) * walkMulti
@@ -160,10 +176,8 @@ walk model =
                     case Keyboard.Extra.arrowsDirection model.keyboardModel of
                         Keyboard.Extra.West ->
                             Left
-
                         Keyboard.Extra.East ->
                             Right
-
                         _ ->
                             model.cat.dir
             }
@@ -236,6 +250,18 @@ renderCat levelWidth levelHeight model =
             )
             element
 
+kid : Int -> Int -> Model -> Element.Element
+kid levelWidth levelHeight model =
+  let
+      element =
+          Collage.collage 50
+              50
+              [ Element.image 100 100 ("images/obj_box001.png")
+                  |> Collage.toForm
+              ]
+      _ = Debug.log "bla " model.kidPositionX
+  in
+    Element.container levelWidth levelHeight (Element.bottomLeftAt ( Element.absolute model.kidPositionX ) ( Element.absolute 0 )) element
 
 view : Model -> Html.Html Msg
 view model =
@@ -248,6 +274,7 @@ view model =
                 [ Element.tiledImage w h "images/Wall.png"
                 , Map.renderMap model.map
                 , renderCat w h model
+                , kid w h model
                 ]
                 |> Element.toHtml
             ]
