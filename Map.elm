@@ -112,17 +112,14 @@ You can use this to test for collisions (e.g. get the tile at the edge in the di
 
 TODO: Decide whether that's the best origin :)
 -}
-getTileAtPosition : Map -> ( Float, Float ) -> Tile
+getTileAtPosition : Map -> ( Int, Int ) -> Tile
 getTileAtPosition map ( x, y ) =
     let
         colIndex =
-            floor (x / toFloat tileWidth)
+            x // tileWidth
 
         rowIndex =
-            floor (y / toFloat tileHeight)
-
-        _ =
-            Debug.log "x,y -> position" ( ( x, y ), ( colIndex, rowIndex ) )
+            y // tileHeight
 
         -- Helper to get at a particular index in a list, alternative -s |> List.drop idx |> List.head
         get idx =
@@ -155,8 +152,8 @@ main =
 
         tiles =
             [ getTileAtPosition map ( 0, 0 )
-            , getTileAtPosition map ( 101.5, 99 )
-            , getTileAtPosition map ( 301.5, 120 )
+            , getTileAtPosition map ( 101, 99 )
+            , getTileAtPosition map ( 301, 120 )
             ]
     in
         Html.div []

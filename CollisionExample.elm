@@ -16,7 +16,11 @@ import Map
 
 
 type alias Cat =
-    { x : Float, y : Float }
+    { x : Int
+    , y : Int
+    , width : Int
+    , height : Int
+    }
 
 
 type alias Model =
@@ -37,7 +41,7 @@ init =
             Keyboard.Extra.init
 
         model =
-            { cat = Cat 0 0
+            { cat = Cat 0 0 100 100
             , map = Map.init
             , keyboardModel = keyboardModel
             }
@@ -55,41 +59,21 @@ update msg model =
                 ( keyboardModel, keyboardCmd ) =
                     Keyboard.Extra.update keyboardMsg model.keyboardModel
 
-                arrows =
-                    Keyboard.Extra.arrows keyboardModel
-                        |> Debug.log "arrows"
-
                 cat =
                     model.cat
 
+                arrows =
+                    Keyboard.Extra.arrows keyboardModel
+
                 newX =
-                    cat.x + toFloat arrows.x * 10
+                    cat.x + arrows.x * 10
 
                 newY =
-                    cat.y + toFloat arrows.y * 10
+                    cat.y + arrows.y * 10
 
-                _ =
-                    Debug.log "old -> new" ( ( cat.x, cat.y ), ( newX, newY ) )
-
-                collisionX =
-                    Collision.checkCollision model.map ( newX, cat.y )
-
-                collisionY =
-                    Collision.checkCollision model.map ( cat.x, newY )
-
-                newCat =
-                    case ( collisionX, collisionY ) of
-                        ( Nothing, Nothing ) ->
-                            { cat | x = newX, y = newY }
-
-                        ( Just _, Nothing ) ->
-                            { cat | y = newY }
-
-                        ( Nothing, Just _ ) ->
-                            { cat | x = newX }
-
-                        _ ->
-                            cat
+                (newCat, _) =
+                    { cat | x = newX, y = newY }
+                        |> Collision.updateWithCollisionCheck model.map cat
             in
                 { model | cat = newCat, keyboardModel = keyboardModel } ! [ Cmd.map KeyboardExtraMsg keyboardCmd ]
 
@@ -106,8 +90,8 @@ renderCat levelWidth levelHeight model =
     in
         Element.container levelWidth
             levelHeight
-            (Element.bottomLeftAt (Element.absolute (floor model.cat.x))
-                (Element.absolute (floor model.cat.y))
+            (Element.bottomLeftAt (Element.absolute model.cat.x)
+                (Element.absolute model.cat.y)
             )
             element
 
