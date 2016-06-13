@@ -1,10 +1,14 @@
 {
     "version": "1.0.0",
-    "summary": "helpful summary of your project, less than 80 characters",
+    "summary": "Elm Workshop @ Joy of Coding 2016",
     "repository": "https://github.com/user/project.git",
     "license": "BSD3",
     "source-directories": [
-        "."
+        ".",
+        "02-elm-architecture",
+        "04-draw-a-box",
+        "05-element-and-collage",
+        "08-game-loop"
     ],
     "exposed-modules": [],
     "dependencies": {
