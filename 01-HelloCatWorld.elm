@@ -13,11 +13,9 @@ type Msg = Nothing -- TODO:  get rid of this?
 
 view : Model -> Html.Html Msg
 view model =
-
         Html.div []
             [ Element.layers
                 [ Element.tiledImage 150 160 model.cat
-
                 ]
                 |> Element.toHtml
             ]
@@ -32,11 +30,7 @@ init =
         model
 
 update : Msg -> Model -> Model
-update msg model =
-    let
-      _ = Debug.log "msg " msg
-      _ = Debug.log "msg " model.cat
-    in
+update msg model =    
       model
 
 main : Program Never
