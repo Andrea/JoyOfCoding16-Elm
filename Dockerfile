@@ -9,7 +9,7 @@ RUN elm package install --yes
 
 COPY *.elm ./
 COPY images/* images/
-RUN elm make --output ubjer.js *.elm
+RUN elm make --output ubjer.js Main.elm CollisionExample.elm MiniCat.elm MegaCat.elm
 
 EXPOSE 8000
 CMD ["elm", "reactor", "--address", "0.0.0.0"]
