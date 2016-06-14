@@ -5,7 +5,9 @@
     "license": "BSD3",
     "source-directories": [
         ".",
+        "01-hello-cat-world",
         "02-elm-architecture",
+        "03-menus-and-html",
         "04-draw-a-box",
         "05-element-and-collage",
         "08-game-loop"
