@@ -7,7 +7,7 @@ The Graphics library has two main parts:
 1. Element
 2. Collage
 
-(Originally Elm was a JS graphics library.)
+(Sidenote: originally Elm was a JS graphics library.)
 
 ## Collage
 
