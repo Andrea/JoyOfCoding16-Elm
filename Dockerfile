@@ -1,15 +1,33 @@
-FROM node:6.2.1-slim
+FROM haskell:7.10.3
+
 
 RUN apt-get update \
     && apt-get install -y git-core
-RUN npm install -g elm@0.17.0
 
-COPY elm-package.json elm-package.json
-RUN elm package install --yes
+COPY BuildFromSource.hs /BuildFromSource.hs
+ENV PATH /Elm-Platform/0.17/.cabal-sandbox/bin:$PATH
+RUN runhaskell BuildFromSource.hs 0.17
 
-COPY *.elm ./
-COPY images/* images/
-RUN elm make --output ubjer.js Main.elm CollisionExample.elm MiniCat.elm MegaCat.elm
+RUN cd /Elm-Platform/0.17/ \
+    && git clone https://github.com/elm-lang/elm-lang.org.git \
+    && cd elm-lang.org \
+    && git checkout master \
+    && cabal sandbox init --sandbox ../.cabal-sandbox \
+    && cabal install --only-dependencies \
+    && cabal configure \
+    && cabal build
+
+COPY elm-package.json /Elm-Platform/0.17/elm-lang.org/elm-package.json
+RUN cd /Elm-Platform/0.17/elm-lang.org \
+    && elm package install -y
+
+COPY *.elm /Elm-Platform/0.17/elm-lang.org/src/shared/
+COPY CollisionExample.elm /Elm-Platform/0.17/elm-lang.org/src/examples/
+RUN cd /Elm-Platform/0.17/elm-lang.org \
+    && elm make --output examples.js src/examples/*.elm src/shared/*.elm
+
+COPY pages/*.elm /Elm-Platform/0.17/elm-lang.org/src/pages/
 
 EXPOSE 8000
-CMD ["elm", "reactor", "--address", "0.0.0.0"]
+WORKDIR /Elm-Platform/0.17/elm-lang.org
+CMD ["./dist/build/run-elm-website/run-elm-website"]
