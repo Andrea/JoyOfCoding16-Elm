@@ -14,32 +14,9 @@ import Text
 import Time exposing (..)
 import Window
 
--- type Direction
---     = None
---     | Right
---     | Left
---
--- type CatAction
---   = Standing
---   | Walk
---   | Jummp
---
--- type alias Cat =
---     { x : Float
---     , y : Float
---     , dir : Direction
---     , action : CatAction
---     , velocityX: Float
---     , velocityY : Float
---     }
---
-
 type alias Model =
-    { --cat : Cat
-    playerScore : Float
+    { playerScore : Float
     , windowSize : Window.Size
-    -- , keyboardModel : Keyboard.Extra.Model
-    --,
     , phase : GamePhase
     }
 
@@ -61,10 +38,8 @@ init =
         model =
           { playerScore = 0
           , windowSize = Window.Size 0 0
-            -- For brevity use the model constructors instead of {} for Cat and Window.Size
-              ,phase = GamePhase --MenuPhase
+          ,phase = MenuPhase
             }
-
         cmd =
             Cmd.batch
                 -- Normally We'd have to handle success and failure cases for the task, but here
@@ -75,29 +50,8 @@ init =
     in
         ( model, cmd )
 
--- updateKeys : Keyboard.Extra.Msg -> Model -> Model
--- updateKeys keyMsg model=
---   let
---       ( keyboardModel, keyboardCmd ) =
---           Keyboard.Extra.update keyMsg model.keyboardModel
---       direction =
---           case Keyboard.Extra.arrowsDirection keyboardModel of
---               Keyboard.Extra.West -> Left
---               Keyboard.Extra.East -> Right
---               _ -> model.cat.dir
---
---       cat = model.cat
---       newCat =
---           { cat | dir = direction }
---   in
---        { model
---           | keyboardModel = keyboardModel
---           , cat = newCat
---         }
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-
     case msg of
         Play ->
             ( { model | phase = GamePhase }
@@ -119,58 +73,6 @@ update msg model =
 step : Float -> Model -> Model
 step delta model =
   model
-    -- |> gravity delta
-    -- |> jump
-    -- |> walk
-    -- |> physics delta
-
-
--- gravity : Float -> Model -> Model
--- gravity delta model =
---   let
---     cat = model.cat
---     newCat = { cat |
---                 velocityY = if cat.y > 0 then cat.velocityY - delta * 20 else 0
---              }
---   in
---   { model |
---       cat = newCat
---   }
-
--- physics : Float -> Model -> Model
--- physics delta model =
---   let
---     cat = model.cat
---     newCat = { cat |
---                 x = cat.x + delta * cat.velocityX,
---                 y = max 0 (cat.y  + delta * cat.velocityY * 35)
---              }
---   in
---     { model |
---        cat = newCat
---     }
---
--- jump : Model -> Model
--- jump model =
---   let
---       cat = model.cat
---       newCat = { cat |
---                 velocityY = 15.0 }
---       keyz = Keyboard.Extra.isPressed Keyboard.Extra.Space model.keyboardModel
---   in
---     if keyz && cat.velocityY == 0 then { model | cat = newCat } else model
---
--- walkMulti : Float
--- walkMulti = 300
-
--- walk : Model -> Model
--- walk model =
---   let
---     cat = model.cat
---     keyz = Keyboard.Extra.arrows model.keyboardModel
---
---   in
---     model
 
 view : Model -> Html Msg
 view model =
@@ -192,7 +94,7 @@ renderMenu : Model -> Html Msg
 renderMenu model =
     div [ attribute "style" centeredDivStyle ]
         [ p [ attribute "style" titleStyle ] [ Html.text "The joy of cats!" ]
-        , img [ attribute "src" "images/splash.jpg"
+        , img [ attribute "src" "../images/splash.jpg"
               , attribute "width" "300px"
               , attribute "height" "300px"
               ] []
@@ -223,10 +125,6 @@ centeredDivStyle = "width: 300px; margin-left: auto; margin-right: auto;"
 renderGame : Model -> Html Msg
 renderGame model =
     let
-        -- newCat = model.cat
-        -- verb = newCat.action
-        -- newDir = toString newCat.dir
-
         imagePath =
             "../images/cat-running-left.gif"
 
@@ -236,14 +134,13 @@ renderGame model =
             [ collage  640 480
                 [ image 70 70 imagePath
                       |> toForm
-                      -- |> move (newCat.x, newCat.y)
                 ]
                 |> Element.toHtml
             ]
 
 textGreen : Color
 textGreen =
-    rgb 160 200 160
+    rgb 160 20 190
 
 txt : (Text.Text -> Text.Text) -> String -> Html string
 txt f string =
