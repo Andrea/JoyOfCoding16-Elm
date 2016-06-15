@@ -1,6 +1,5 @@
 module HelloWebWorld exposing (..)
 
-import AnimationFrame
 import Collage exposing (..)
 import Color exposing (..)
 import Element exposing (..)
@@ -8,45 +7,29 @@ import Html exposing (Html, div, text, p, img)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (onClick)
 import Html.App as App
-import Keyboard.Extra
-import Task.Extra
 import Text
-import Time exposing (..)
-import Window
 
 type alias Model =
-    { playerScore : Float
-    , windowSize : Window.Size
-    , phase : GamePhase
+    { phase : Game
     }
 
-type GamePhase -- it needed to include '-Phase' because having Main.Menu produces odd errors
+type Game
     = MenuPhase
     | GamePhase
     | GameOverPhase
 
 type Msg
-    = WindowSize Window.Size
-    | KeyboardExtraMsg Keyboard.Extra.Msg
-    | Tick Time.Time
-    | Play
+    = Play
     | GameOver
 
 init : ( Model, Cmd Msg )
 init =
     let
         model =
-          { playerScore = 0
-          , windowSize = Window.Size 0 0
-          ,phase = MenuPhase
+          { phase = MenuPhase
             }
         cmd =
-            Cmd.batch
-                -- Normally We'd have to handle success and failure cases for the task, but here
-                -- we can use performFailproof as we know this will never fail.
-                [ Window.size |> Task.Extra.performFailproof WindowSize
-                -- , Cmd.map KeyboardExtraMsg keyboardCmd
-                ]
+            Cmd.none
     in
         ( model, cmd )
 
@@ -61,26 +44,12 @@ update msg model =
             ( { model | phase = GameOverPhase }
             , Cmd.none )
 
-        WindowSize newSize ->
-            ( { model | windowSize = newSize }, Cmd.none )
-
-        KeyboardExtraMsg keyMsg ->
-             ( model, Cmd.none )
-
-        Tick delta ->
-              (step delta model, Cmd.none)
-
-step : Float -> Model -> Model
-step delta model =
-  model
-
 view : Model -> Html Msg
 view model =
     case model.phase of
         GamePhase ->
             div []
                 [ (div [] [ txt (Text.height 40) "The Joy of cats" ])
-                , (div [] [ Html.text ("Score " ++ ((round model.playerScore) |> toString)) ])
                 , (div [] [ renderGame model ])
                 , (div [] [ Html.text "Footer here | (c) Cats united of the world" ])
                 ]
@@ -109,7 +78,6 @@ renderGameOver model =
               , attribute "width" "300px"
               , attribute "height" "300px"
               ] []
-        , p [] [Html.text ("Your score is " ++ (toString model.playerScore))]
         ]
 
 titleStyle : String
@@ -127,8 +95,6 @@ renderGame model =
     let
         imagePath =
             "../images/cat-running-left.gif"
-
-        _ = Debug.log "Path " imagePath
     in
         div []
             [ collage  640 480
@@ -154,17 +120,16 @@ txt f string =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch
-        [ Window.resizes WindowSize
-        , Sub.map KeyboardExtraMsg Keyboard.Extra.subscriptions
-        , AnimationFrame.diffs (Tick << inSeconds)
-        ]
+    Sub.none
+        -- [
+        --  AnimationFrame.diffs (Tick << inSeconds)
+        -- ]
 
 main : Program Never
 main =
     App.program
         { init = init
-        , update = update
         , view = view
+        , update = update
         , subscriptions = subscriptions
         }
