@@ -105,7 +105,7 @@ renderGameOver : Model -> Html Msg
 renderGameOver model =
     div [ attribute "style" centeredDivStyle ]
         [ p [ attribute "style" titleStyle ] [ Html.text "GAME OVER!" ]
-        , img [ attribute "src" "images/gameover.jpg"
+        , img [ attribute "src" "../images/gameover.jpg"
               , attribute "width" "300px"
               , attribute "height" "300px"
               ] []
@@ -136,6 +136,7 @@ renderGame model =
                       |> toForm
                 ]
                 |> Element.toHtml
+              , Html.button [ onClick GameOver, attribute "style" menuButtonStyle ] [ Html.text "GameOver"]
             ]
 
 textGreen : Color
