@@ -1,77 +1,164 @@
-{-| Demonstrate gravity in a game loop 
--}
+import Collage exposing (..)
+import Element exposing (..)
+import Html exposing (Html, div, text, p, img)
+import Html.App as App
+import Keyboard.Extra
+import Task.Extra
+import Time exposing (..)
+import Window
 
-import Collage
-import Color
-import Element
-import Html
-import Html.App
-import AnimationFrame
-import Time
+type Direction
+    = None
+    | Right
+    | Left
 
-type alias Model = 
-    { y : Int
-    , velocity : Float
+type alias Cat =
+    { x : Float
+    , y : Float
+    , dir : Direction
+    , velocityX: Float
+    , velocityY : Float
     }
 
-type Msg = Nothing | Tick Time.Time
+type alias Model =
+    { cat : Cat
+    , playerScore : Float
+    , windowSize : Window.Size
+    , keyboardModel : Keyboard.Extra.Model
+    }
 
-init : (Model, Cmd Msg)
+type Msg
+    = WindowSize Window.Size
+    | KeyboardExtraMsg Keyboard.Extra.Msg
+    | Tick Time.Time
+    | Play
+    | GameOver
+
+init : ( Model, Cmd Msg )
 init =
-    ({ y = 450, velocity = 0}, Cmd.none)
-
-update : Msg -> Model -> (Model, Cmd Msg)
-update msg model =
-    case msg of
-        Nothing ->
-            (model, Cmd.none)
-        Tick delta ->
-            (step delta model, Cmd.none)
-
-step : Float -> Model -> Model
-step delta model =
-    model
-        |> gravity delta
-        |> physics delta
-
-gravity : Float -> Model -> Model
-gravity delta model =
-    { model
-        | velocity = model.velocity - delta * 20
-    }
-
-physics : Float -> Model -> Model
-physics delta model =
-    { model |
-        y = (toFloat model.y + delta * model.velocity * 35)
-                |> max 0
-                |> round
-    }
-
-view : Model -> Html.Html Msg
-view model =
     let
-        element = Collage.collage 100 100
-            [ Collage.rect 100 100
-                |> Collage.filled Color.red
-            ]
-            |> Element.container 500 500
-                (Element.bottomLeftAt 
-                    (Element.absolute 250)
-                    (Element.absolute model.y)
-            )
+        ( keyboardModel, keyboardCmd ) =
+            Keyboard.Extra.init
+
+        model =
+            -- For brevity use the model constructors instead of {} for Cat and Window.Size
+            { cat = Cat 0 0 Right 0 0
+            , playerScore = 0
+            , windowSize = Window.Size 0 0
+            , keyboardModel = keyboardModel
+            }
+
+        cmd =
+            Cmd.batch
+                -- Normally We'd have to handle success and failure cases for the task, but here
+                -- we can use performFailproof as we know this will never fail.
+                [ Window.size |> Task.Extra.performFailproof WindowSize
+                , Cmd.map KeyboardExtraMsg keyboardCmd
+                ]
     in
-        Html.div [] [ element |> Element.toHtml ]
+        ( model, cmd )
+
+updateKeys : Keyboard.Extra.Msg -> Model -> Model
+updateKeys keyMsg model=
+  let
+      ( keyboardModel, keyboardCmd ) =
+          Keyboard.Extra.update keyMsg model.keyboardModel
+      direction =
+          case Keyboard.Extra.arrowsDirection keyboardModel of
+              Keyboard.Extra.West -> Left
+              Keyboard.Extra.East -> Right
+              _ -> model.cat.dir
+
+      cat = model.cat
+      newCat =
+          { cat | dir = direction }
+  in
+       { model
+          | keyboardModel = keyboardModel
+          , cat = newCat
+        }
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+
+    case msg of
+        Play ->
+            (  model,
+             Cmd.none )
+
+        GameOver ->
+            (  model
+            , Cmd.none )
+
+        WindowSize newSize ->
+            ( { model | windowSize = newSize }, Cmd.none )
+
+        KeyboardExtraMsg keyMsg ->
+            (updateKeys keyMsg model, Cmd.none)
+
+        Tick delta ->
+              (step  model, Cmd.none)
+
+
+step :  Model -> Model
+step  model =
+  model
+    |> walk
+
+walkMulti : Float
+walkMulti = 300
+
+walk : Model -> Model
+walk model =
+  let
+    cat = model.cat
+    keyz = Keyboard.Extra.arrows model.keyboardModel
+    newCat = {cat |
+                velocityX =  (toFloat keyz.x) * walkMulti
+                , dir =
+                     case Keyboard.Extra.arrowsDirection model.keyboardModel of
+                         Keyboard.Extra.West -> Left
+                         Keyboard.Extra.East -> Right
+                         _ -> model.cat.dir
+                   }
+  in
+    { model |
+       cat = newCat
+    }
+
+view : Model -> Html Msg
+view model =
+    div []
+        [ (div [] [ renderGame model ])
+        ]
+
+renderGame : Model -> Html Msg
+renderGame model =
+    let
+        cat = model.cat
+    in
+        div []
+            [ collage  640 480
+                [ image 70 70 "/assets/cat-running-right.gif"
+                      |> toForm
+                      |> move (cat.x, cat.y)
+                ]
+                |> Element.toHtml
+            ]
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    AnimationFrame.diffs (Tick << Time.inSeconds)
+    Sub.batch
+        [ Sub.map KeyboardExtraMsg Keyboard.Extra.subscriptions
+        ]
+
 
 main : Program Never
 main =
-    Html.App.program
+    App.program
         { init = init
-        , subscriptions = subscriptions
         , update = update
         , view = view
-    }
+        , subscriptions = subscriptions
+        }
