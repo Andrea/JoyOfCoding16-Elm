@@ -1,5 +1,3 @@
-module ElmArchitectureBeginnerProgram exposing (..)
-
 import Html
 import Html.App
 

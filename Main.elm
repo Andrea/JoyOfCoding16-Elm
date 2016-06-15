@@ -207,7 +207,7 @@ renderMenu : Model -> Html Msg
 renderMenu model =
     div [ attribute "style" centeredDivStyle ]
         [ p [ attribute "style" titleStyle ] [ Html.text "The joy of cats!" ]
-        , img [ attribute "src" "assets/splash.jpg"
+        , img [ attribute "src" "/assets/splash.jpg"
               , attribute "width" "300px"
               , attribute "height" "300px"
               ] []
@@ -218,7 +218,7 @@ renderGameOver : Model -> Html Msg
 renderGameOver model =
     div [ attribute "style" centeredDivStyle ]
         [ p [ attribute "style" titleStyle ] [ Html.text "GAME OVER!" ]
-        , img [ attribute "src" "assets/gameover.jpg"
+        , img [ attribute "src" "/assets/gameover.jpg"
               , attribute "width" "300px"
               , attribute "height" "300px"
               ] []
@@ -244,9 +244,9 @@ renderGame model =
 
         imagePath =
           --  if verb == Standing then
-          --   "assets/cat-"  ++ (toString verb) ++ ".gif" |> String.toLower
+          --   "/assets/cat-"  ++ (toString verb) ++ ".gif" |> String.toLower
           -- else 
-            "assets/cat-"  ++ (toString verb) ++ "-" ++ newDir ++ ".gif" |> String.toLower
+            "/assets/cat-"  ++ (toString verb) ++ "-" ++ newDir ++ ".gif" |> String.toLower
 
         _ = Debug.log "Path " imagePath
     in

@@ -1,5 +1,3 @@
-module CollisionExample exposing (..)
-
 {-| Cut down game, with level and basic collision detection
 
 Main character is an exciting box
@@ -104,7 +102,7 @@ view model =
     in
         Html.div []
             [ Element.layers
-                [ Element.tiledImage w h "assets/Wall.png"
+                [ Element.tiledImage w h "/assets/wall.png"
                 , Map.renderMap model.map
                 , renderCat w h model
                 ]

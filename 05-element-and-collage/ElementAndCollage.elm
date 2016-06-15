@@ -29,7 +29,7 @@ view model =
                     (Element.absolute (floor 15))
                 )
         element2 = Collage.collage 100 100
-            [ Element.image 100 100 ("../assets/obj_box001.png")
+            [ Element.image 100 100 ("/assets/obj_box001.png")
                 |> Collage.toForm
             ]
             |> Element.container 800 600
