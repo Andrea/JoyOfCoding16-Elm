@@ -21,7 +21,10 @@ COPY elm-package.json /Elm-Platform/0.17/elm-lang.org/elm-package.json
 RUN cd /Elm-Platform/0.17/elm-lang.org \
     && elm package install -y
 
+COPY assets/* /Elm-Platform/0.17/elm-lang.org/assets/ 
 COPY *.elm /Elm-Platform/0.17/elm-lang.org/src/shared/
+COPY 0*.elm /Elm-Platform/0.17/elm-lang.org/src/examples/
+COPY 0*/*.elm /Elm-Platform/0.17/elm-lang.org/src/examples/
 COPY CollisionExample.elm /Elm-Platform/0.17/elm-lang.org/src/examples/
 RUN cd /Elm-Platform/0.17/elm-lang.org \
     && elm make --output examples.js src/examples/*.elm src/shared/*.elm

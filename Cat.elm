@@ -137,7 +137,7 @@ renderCat model =
                 Right ->
                     "right"
     in
-        Element.image 100 100 ("images/cat-" ++ state ++ "-" ++ direction ++ ".gif")
+        Element.image 100 100 ("assets/cat-" ++ state ++ "-" ++ direction ++ ".gif")
 
 
 view : Model -> Html.Html Msg

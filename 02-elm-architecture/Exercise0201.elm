@@ -1,6 +1,4 @@
-module Exercise0201 exposing (..)
-
-{-| Fill in the blanks
+{-| Change the Int message to a nicer string
 -}
 
 import Html
@@ -8,15 +6,15 @@ import Html.App
 
 
 type alias Model =
-    { message :  }
+    { message : Int }
 
 
 type Msg
     = Nothing
 
-
+model : Model
 model =
-    { message = "Hello!" }
+    { message = 0 }
 
 
 update : Msg -> Model -> Model
@@ -26,7 +24,9 @@ update msg model =
 
 view : Model -> Html.Html Msg
 view model =
-    Html.h1 [] [ Html.text model. ]
+    -- Hint: You don't need the toString any more if you have a string message
+    -- But you do need the Html.text :)
+    Html.h1 [] [ Html.text (toString model.message) ]
 
 
 main : Program Never

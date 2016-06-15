@@ -104,7 +104,7 @@ view model =
     in
         Html.div []
             [ Element.layers
-                [ Element.tiledImage w h "images/Wall.png"
+                [ Element.tiledImage w h "assets/Wall.png"
                 , Map.renderMap model.map
                 , renderCat w h model
                 ]
