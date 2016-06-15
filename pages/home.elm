@@ -44,47 +44,51 @@ content =
         Markdown.toHtml [] """
 # Code
 
-## 1. Hello World
+## Hello World
 
 ### Exercises
 
-1. [Exercise01.elm](/examples/Exercise01) 
+- [Exercise01.elm](/examples/Exercise01) 
 
-## 2. Elm Architecture
+## Elm Architecture
 
-1. [ElmArchitectureBeginnerProgram.elm](/examples/ElmArchitectureBeginnerProgram)
-2. [ElmArchitectureProgram.elm](/examples/ElmArchitectureProgram)
+- [ElmArchitectureBeginnerProgram.elm](/examples/ElmArchitectureBeginnerProgram)
+- [ElmArchitectureProgram.elm](/examples/ElmArchitectureProgram)
 
 ### Exercises
 
-1. [Exercise0201](/examples/Exercise0201)
-2. [Exercise0202](/examples/Exercise0202)
+- [Exercise0201](/examples/Exercise0201)
+- [Exercise0202](/examples/Exercise0202)
 
-## 3. Menus & HTML
+## Menus & HTML
 
-1. [MenusAndHtml.elm](/examples/MenusAndHtml)
+- [MenusAndHtml.elm](/examples/MenusAndHtml)
 
-## 4. Elm Graphics
+## Elm Graphics
 
-1. [DrawABox.elm](/examples/DrawABox)
+- [DrawABox.elm](/examples/DrawABox)
 
-## 5. Element & Collage
+## Element & Collage
 
-1. [ElementAndCollage.elm](/examples/ElementAndCollage)
+- [ElementAndCollage.elm](/examples/ElementAndCollage)
 
-## 6. 
+## Move a Box
 
-## 7. 
+- [MoveBox.elm](/examples/MoveBox) 
 
-## 8. Game Loops
+## Basic Animation and Physics
 
-1. [Gravity.elm](/examples/Gravity)
+- [BasicAnimationAndPhysics.elm](/examples/BasicAnimationAndPhysics)
+
+## Game Loops
+
+- [Gravity.elm](/examples/Gravity)
 
 # Other Examples
 
-1. [CollisionExample.elm](/examples/CollisionExample)
-2. [MiniCat.elm](/examples/MiniCat)
-3. [MegaCat.elm](/examples/MegaCat)
+- [CollisionExample.elm](/examples/CollisionExample)
+- [MiniCat.elm](/examples/MiniCat)
+- [MegaCat.elm](/examples/MegaCat)
 
 """
     ]

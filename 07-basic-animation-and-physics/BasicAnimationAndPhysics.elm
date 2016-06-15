@@ -1,5 +1,3 @@
-module HelloCatWorld exposing (..)
-
 {-| Gluing all the bits together :)
 -}
 
@@ -24,7 +22,7 @@ init :  Model
 init =
     let
         model =
-            { cat = "images/cat-standing-left.gif"
+            { cat = "/assets/cat-standing-left.gif"
             }
     in
         model
