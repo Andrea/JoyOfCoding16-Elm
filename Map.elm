@@ -98,7 +98,7 @@ tileImage img =
 
 crateTile : Element
 crateTile =
-    tileImage "images/obj_box002.png"
+    tileImage "/assets/obj_box002.png"
 
 
 emptyTile : Element
@@ -130,7 +130,7 @@ getTileAtPosition map ( x, y ) =
             |> get rowIndex
             |> Maybe.withDefault []
             |> get colIndex
-            |> Maybe.withDefault (Empty (tileImage "images/obj_crate001.png"))
+            |> Maybe.withDefault (Empty (tileImage "/assets/obj_crate001.png"))
 
 
 renderMap : Map -> Element

@@ -1,5 +1,3 @@
-module DrawABox exposing (..)
-
 import Collage
 import Color
 import Element

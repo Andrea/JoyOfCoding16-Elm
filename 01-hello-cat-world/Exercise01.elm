@@ -1,5 +1,3 @@
-module Exercise01 exposing (..)
-
 import String
 
 substring : Int -> String -> String  -- type annotation | currying

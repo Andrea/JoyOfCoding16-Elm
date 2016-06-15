@@ -1,5 +1,3 @@
-module MiniCat exposing (..)
-
 import AnimationFrame
 import Collage exposing (..)
 import Element exposing (..)
@@ -181,7 +179,7 @@ renderGame model =
     in
         div []
             [ collage  640 480
-                [ image 70 70 "images/cat-running-right.gif"
+                [ image 70 70 "/assets/cat-running-right.gif"
                       |> toForm
                       |> move (cat.x, cat.y)
                 ]

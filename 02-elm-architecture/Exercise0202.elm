@@ -1,5 +1,3 @@
-module Exercise0202 exposing (..)
-
 {-| Show the updated window size
 -}
 

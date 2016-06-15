@@ -1,5 +1,3 @@
-module MegaCat exposing (..)
-
 {-| Gluing all the bits together :)
 -}
 
@@ -256,7 +254,7 @@ renderCat levelWidth levelHeight model =
         element =
             Collage.collage 100
                 100
-                [ Element.image 100 100 ("images/cat-" ++ state ++ "-" ++ direction ++ ".gif")
+                [ Element.image 100 100 ("/assets/cat-" ++ state ++ "-" ++ direction ++ ".gif")
                     |> Collage.toForm
                 ]
     in
@@ -273,7 +271,7 @@ kid levelWidth levelHeight model =
       element =
           Collage.collage 50
               50
-              [ Element.image 100 100 ("images/obj_box001.png")
+              [ Element.image 100 100 ("/assets/obj_box001.png")
                   |> Collage.toForm
               ]
       _ = Debug.log "bla " model.kidPositionX
@@ -288,7 +286,7 @@ view model =
     in
         Html.div []
             [ Element.layers
-                [ Element.tiledImage w h "images/Wall.png"
+                [ Element.tiledImage w h "/assets/wall.png"
                 , Map.renderMap model.map
                 , renderCat w h model
                 , kid w h model

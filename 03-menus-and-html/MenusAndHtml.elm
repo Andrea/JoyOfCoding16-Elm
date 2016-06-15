@@ -1,5 +1,4 @@
-module HelloWebWorld exposing (..)
-
+import AnimationFrame
 import Collage exposing (..)
 import Color exposing (..)
 import Element exposing (..)
@@ -63,7 +62,7 @@ renderMenu : Model -> Html Msg
 renderMenu model =
     div [ attribute "style" centeredDivStyle ]
         [ p [ attribute "style" titleStyle ] [ Html.text "The joy of cats!" ]
-        , img [ attribute "src" "../images/splash.jpg"
+        , img [ attribute "src" "/assets/splash.jpg"
               , attribute "width" "300px"
               , attribute "height" "300px"
               ] []
@@ -74,7 +73,7 @@ renderGameOver : Model -> Html Msg
 renderGameOver model =
     div [ attribute "style" centeredDivStyle ]
         [ p [ attribute "style" titleStyle ] [ Html.text "GAME OVER!" ]
-        , img [ attribute "src" "../images/gameover.jpg"
+        , img [ attribute "src" "/assets/gameover.jpg"
               , attribute "width" "300px"
               , attribute "height" "300px"
               ] []
@@ -94,7 +93,7 @@ renderGame : Model -> Html Msg
 renderGame model =
     let
         imagePath =
-            "../images/cat-running-left.gif"
+            "/assets/cat-running-left.gif"
     in
         div []
             [ collage  640 480

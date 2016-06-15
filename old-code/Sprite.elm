@@ -92,13 +92,13 @@ main : Html.Html Msg
 main =
     let
         sprite =
-            init (Element.image 100 100 "images/obj_box001.png") 0 0
+            init (Element.image 100 100 "/assets/obj_box001.png") 0 0
 
         sprite2 =
-            init (Element.image 100 100 "images/obj_box002.png") 200 0
+            init (Element.image 100 100 "/assets/obj_box002.png") 200 0
 
         sprite3 =
-            init (Element.image 100 100 "images/cat-running-right.gif") 10 0
+            init (Element.image 100 100 "/assets/cat-running-right.gif") 10 0
     in
         Html.div []
             [ Element.layers
