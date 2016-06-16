@@ -1,4 +1,3 @@
-import AnimationFrame
 import Collage exposing (..)
 import Color exposing (..)
 import Element exposing (..)
@@ -48,15 +47,39 @@ view model =
     case model.phase of
         GamePhase ->
             div []
-                [ (div [] [ txt (Text.height 40) "The Joy of cats" ])
-                , (div [] [ renderGame model ])
-                , (div [] [ Html.text "Footer here | (c) Cats united of the world" ])
+                [ 
+                -- Hint: this is a List of divs that will be stacked, you can add 
+                --   as many as you need.
+                -- Hint: you can call functions that return Html msg
+                -- Hint: note the two ways to render and style text 
+                  (div [] [ txt (Text.height 40) "The Joy of cats" ])
+                --, (div [] [ Html.text "==> render the game here <==" ])
+                , (div [] [renderGame model] )
+                , (div [] [ Html.text "Footer here | (c) Cats united of the world ... meow" ])
                 ]
         MenuPhase ->
             div [] [ ( renderMenu model ) ]
 
         GameOverPhase ->
             div [] [ ( renderGameOver model ) ]
+
+renderGame : Model -> Html Msg
+renderGame model =
+    let
+        imagePath =
+            "/assets/cat-running-left.gif"
+    in
+        div []
+                [ collage  640 480
+                    [ image 70 70 imagePath
+                          |> toForm
+                    ]
+                    |> Element.toHtml 
+              , Html.button 
+                    [ onClick GameOver, attribute "style" menuButtonStyle ] 
+                    [ Html.text "GameOver"]
+            ]
+
 
 renderMenu : Model -> Html Msg
 renderMenu model =
@@ -89,40 +112,21 @@ px;border:1px solid #18ab29;display:inline-block;cursor:pointer;color:#ffffff;fo
 centeredDivStyle : String
 centeredDivStyle = "width: 300px; margin-left: auto; margin-right: auto;"
 
-renderGame : Model -> Html Msg
-renderGame model =
-    let
-        imagePath =
-            "/assets/cat-running-left.gif"
-    in
-        div []
-            [ collage  640 480
-                [ image 70 70 imagePath
-                      |> toForm
-                ]
-                |> Element.toHtml
-              , Html.button [ onClick GameOver, attribute "style" menuButtonStyle ] [ Html.text "GameOver"]
-            ]
-
-textGreen : Color
-textGreen =
-    rgb 160 20 190
-
 txt : (Text.Text -> Text.Text) -> String -> Html string
 txt f string =
-    Text.fromString string
-        |> Text.color textGreen
-        |> Text.monospace
-        |> f
-        |> leftAligned
-        |> toHtml
+    let 
+        textGreen =  rgb 160 20 190
+    in            
+        Text.fromString string
+            |> Text.color textGreen
+            |> Text.monospace
+            |> f
+            |> leftAligned
+            |> toHtml
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
-        -- [
-        --  AnimationFrame.diffs (Tick << inSeconds)
-        -- ]
 
 main : Program Never
 main =
