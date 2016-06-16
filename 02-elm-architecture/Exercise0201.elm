@@ -6,6 +6,7 @@ import Html.App
 
 
 type alias Model =
+    -- First change this type to a String and compile, and see what happens
     { message : Int }
 
 
@@ -14,6 +15,7 @@ type Msg
 
 model : Model
 model =
+    -- Next change this to a nice message :)
     { message = 0 }
 
 
