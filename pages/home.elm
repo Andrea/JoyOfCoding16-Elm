@@ -56,7 +56,8 @@ content =
 
 ### Exercises
 
-- [Exercise 1](/examples/Exercise0401)
+- [Exercise 1](/examples/DrawABoxExercise1)
+- [Exercise 2](/examples/DrawABoxExercise2)
 
 ## 3. Move a Box
 
@@ -69,9 +70,9 @@ content =
 
 ### Exercises
 
-- [Exercise 1](/examples/Exercise0201)
-- [Exercise 2](/examples/Exercise0202)
-- [Exercise 3](/examples/Exercise0203)
+- [Exercise 1](/examples/ElmArchitectureExercise1)
+- [Exercise 2](/examples/ElmArchitectureExercise2)
+- [Exercise 3](/examples/ElmArchitectureExercise3)
 
 ## 5. Menus & HTML
 
@@ -80,6 +81,10 @@ content =
 ## 6. Game Loops
 
 - [Gravity.elm](/examples/Gravity)
+
+### Exercises
+
+- [GameLoopExercise 1](/examples/GameLoopExercise1)
 
 ## 7. Basic Animation and Physics
 

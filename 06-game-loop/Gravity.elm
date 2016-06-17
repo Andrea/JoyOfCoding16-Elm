@@ -52,8 +52,8 @@ view : Model -> Html.Html Msg
 view model =
     let
         element = Collage.collage 100 100
-            [ Collage.rect 100 100
-                |> Collage.filled Color.red
+            [ Element.image 100 100 "/assets/cat-running-right.gif"
+                |> Collage.toForm
             ]
             |> Element.container 500 500
                 (Element.bottomLeftAt 
