@@ -53,6 +53,7 @@ init =
 updateKeys : Keyboard.Extra.Msg -> Model -> Model
 updateKeys keyMsg model=
   let
+      -- Hint: 
       ( keyboardModel, keyboardCmd ) =
           Keyboard.Extra.update keyMsg model.keyboardModel
       direction =
@@ -65,6 +66,18 @@ updateKeys keyMsg model=
           | keyboardModel = keyboardModel
           , direction = direction
         }
+
+renderGame : Model -> Html Msg
+renderGame model =
+    div []
+        [ collage  640 480
+            [ image 70 70 "/assets/obj_box001.png"
+                  |> toForm
+                  |> move (model.x, model.y)
+            ]
+            |> Element.toHtml
+        ]
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -100,17 +113,10 @@ view : Model -> Html Msg
 view model =
     div [] [ Collage.collage 500 500 
         -- Hint: change this so that instead of a box, we use an image (from Element)
-        -- path is "assets/obj_box001.png"
-        
-        --[  Collage.rect 100 100
-        --        |> Collage.filled Color.red 
-        --]
-          
-            [ image 70 70 "/assets/obj_box001.png"
-                  |> toForm
-                  |> move (model.x, model.y)
-            ]
-
+        -- path is "assets/obj_box001.png"        
+        [  Collage.rect 100 100
+                |> Collage.filled Color.red 
+        ]
           -- hint : image returns an element, you can convert it to a form with
           -- Collage.toForm, why should you do that?
           -- Hint: We know that the model is updated in update, so x and y change
@@ -119,18 +125,6 @@ view model =
           --  the signature for move is : 
           --   (Float, Float) -> Collage.form -> Collage.form
         |> Element.toHtml ]
-
-renderGame : Model -> Html Msg
-renderGame model =
-
-    div []
-        [ collage  640 480
-            [ image 70 70 "/assets/obj_box001.png"
-                  |> toForm
-                  |> move (model.x, model.y)
-            ]
-            |> Element.toHtml
-        ]
 
 
 subscriptions : Model -> Sub Msg
