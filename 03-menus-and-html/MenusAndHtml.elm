@@ -11,6 +11,7 @@ type alias Model =
     { phase : Game
     }
 
+-- Hint we use this type to help us guide the menus
 type Game
     = MenuPhase
     | GamePhase
@@ -24,7 +25,8 @@ init : ( Model, Cmd Msg )
 init =
     let
         model =
-          { phase = MenuPhase
+          -- Hint: maybe GameOverPhase is not the right menu to start with
+          { phase = GameOverPhase
             }
         cmd =
             Cmd.none
@@ -47,21 +49,21 @@ view model =
     case model.phase of
         GamePhase ->
             div []
-                [ 
-                -- Hint: this is a List of divs that will be stacked, you can add 
+                [
+                -- Hint: this is a List of divs that will be stacked, you can add
                 --   as many as you need.
                 -- Hint: you can call functions that return Html msg
-                -- Hint: note the two ways to render and style text 
+                -- Hint: note the two ways to render and style text
                   (div [] [ txt (Text.height 40) "The Joy of cats" ])
-                --, (div [] [ Html.text "==> render the game here <==" ])
-                , (div [] [renderGame model] )
+                , (div [] [ txt (Text.height 80) "==> render the game here <==" ])
+
                 , (div [] [ Html.text "Footer here | (c) Cats united of the world ... meow" ])
                 ]
         MenuPhase ->
-            div [] [ ( renderMenu model ) ]
+            div [] [  renderMenu model  ]
 
         GameOverPhase ->
-            div [] [ ( renderGameOver model ) ]
+            div [] [ renderGameOver model ]
 
 renderGame : Model -> Html Msg
 renderGame model =
@@ -74,16 +76,16 @@ renderGame model =
                     [ image 70 70 imagePath
                           |> toForm
                     ]
-                    |> Element.toHtml 
-              , Html.button 
-                    [ onClick GameOver, attribute "style" menuButtonStyle ] 
+                    |> Element.toHtml
+              , Html.button
+                    [ onClick GameOver, attribute "style" menuButtonStyle ]
                     [ Html.text "GameOver"]
-            ]
+                ]
 
 
 renderMenu : Model -> Html Msg
 renderMenu model =
-    div [ attribute "style" centeredDivStyle ]
+    div [ centeredDivStyle ]
         [ p [ attribute "style" titleStyle ] [ Html.text "The joy of cats!" ]
         , img [ attribute "src" "/assets/splash.jpg"
               , attribute "width" "300px"
@@ -94,12 +96,11 @@ renderMenu model =
 
 renderGameOver : Model -> Html Msg
 renderGameOver model =
-    div [ attribute "style" centeredDivStyle ]
+    div [ centeredDivStyle ]
         [ p [ attribute "style" titleStyle ] [ Html.text "GAME OVER!" ]
-        , img [ attribute "src" "/assets/gameover.jpg"
-              , attribute "width" "300px"
-              , attribute "height" "300px"
-              ] []
+           -- Hint: add the gameover image that lives in /assets/gameover.jpg
+        -- use the Html.img
+        -- "width" and "height" should be more or less 300px
         ]
 
 titleStyle : String
@@ -109,14 +110,19 @@ menuButtonStyle : String
 menuButtonStyle = "width: 300px; background-color:#44c767;-moz-border-radius:28px;-webkit-border-radius:28px;border-radius:28\
 px;border:1px solid #18ab29;display:inline-block;cursor:pointer;color:#ffffff;font-family:Arial;font-size:17px;font-weight:bold;font-style:italic;padding:16px 31px;text-decoration:none;text-shadow:0px 1px 0px #2f6627"
 
-centeredDivStyle : String
-centeredDivStyle = "width: 300px; margin-left: auto; margin-right: auto;"
+centeredDivStyle : Html.Attribute msg
+centeredDivStyle =
+  Html.Attributes.style
+    [ ("margin-right", "auto")
+    , ("margin-left", "auto")
+    , ("width", "300px")
+    ]
 
 txt : (Text.Text -> Text.Text) -> String -> Html string
 txt f string =
-    let 
+    let
         textGreen =  rgb 160 20 190
-    in            
+    in
         Text.fromString string
             |> Text.color textGreen
             |> Text.monospace
