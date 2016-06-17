@@ -2,6 +2,8 @@
 
 See http://guide.elm-lang.org/architecture/
 
+---
+
 ## The Core Pattern
 
 1. Model
@@ -9,9 +11,13 @@ See http://guide.elm-lang.org/architecture/
 3. View
 4. (Secret)
 
+---
+
 ### Model
 
 Define your state.
+
+---
 
 ```elm
 type alias Model =
@@ -28,6 +34,8 @@ init =
     Model "Hello" 42
 ```
 
+---
+
 - Define your model
 - Initialize your model (two styles)
 - Introduced:
@@ -36,9 +44,13 @@ init =
     + Type annotations
     + Constructing via record or model
 
+---
+
 ### Update
 
 The *only* place your can update your state.
+
+---
 
 ```elm
 type Msg = Hello | Goodbye
@@ -52,6 +64,8 @@ update msg model =
             { model | bar = 10 }
 ```
 
+---
+
 - Define messages you can handle
 - Update your model
 - Introduced:
@@ -60,6 +74,8 @@ update msg model =
     + Function args
     + Case statement (pattern matching)
     + Updating records
+
+---
 
 ### View
 
@@ -79,9 +95,13 @@ view model =
     + Namespaces
     + Calling functions
 
+---
+
 ### Program
 
 Gluing it together in a Program (here it's a beginnerProgram).
+
+---
 
 ```elm
 main : Program Never
@@ -96,17 +116,25 @@ main =
 - Slightly odd signature at first glance
 - Call function with a record with your functions
 
+---
+
 ### Example
 
 ElmArchitectureBeginnerProgram.elm
+
+---
 
 ### Exercise
 
 Exercise0201.elm - fill in the blanks
 
+---
+
 ### Secret?
 
 For non-trivial programs you want effects and events. These are handled via subscriptions.
+
+---
 
 ## Expanded Core Pattern
 
@@ -115,9 +143,13 @@ For non-trivial programs you want effects and events. These are handled via subs
 3. View
 4. Subscriptions
 
+---
+
 ### init
 
 init is the new model (better name too)
+
+---
 
 ```elm
 init : (Model, Cmd Msg)
@@ -130,9 +162,13 @@ init =
     + Tuples
     + Cmd (Effects)
 
+---
+
 ### Update
 
 Now with added effects
+
+---
 
 ```elm
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -142,15 +178,23 @@ update msg model =
     model ! []
 ```
 
+---
+
 - Update also returns commands
 - Introduced:
     - model ! [cmd] shorthand
+
+---
 
 ### View
 
 Nothing new here, totally unchanged (yay).
 
+---
+
 ### Subscriptions
+
+---
 
 ```elm
 subscriptions : Model -> Sub Msg
@@ -161,12 +205,18 @@ subscriptions model =
     AnimationFrame.diffs (Tick << inSeconds)
 ```
 
+---
+
 - Extra function (does nothing)
 - Takes your model state so you can control subscriptions
+
+---
 
 ### Program
 
 Now for the full program:
+
+---
 
 ```elm
 main : Program Never
@@ -179,9 +229,13 @@ main =
     }
 ```
 
+---
+
 ### Example
 
 ElmArchitectureProgram.elm
+
+---
 
 ### Exercise
 

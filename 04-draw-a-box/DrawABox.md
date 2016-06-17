@@ -1,5 +1,7 @@
 # Draw a Box
 
+---
+
 ## Elm Graphics
 
 The Graphics library has two main parts:
@@ -9,9 +11,13 @@ The Graphics library has two main parts:
 
 (Sidenote: originally Elm was a JS graphics library.)
 
+---
+
 ## Collage
 
 Collage is used to draw primitives (boxes, polygons, etc).
+
+---
 
 To create a 100x100 red box:
 
@@ -24,6 +30,8 @@ You can draw many primitives, transform them and then render via Collage.collage
 
 Typically Collage draws using a `<canvas>`.
 
+---
+
 ## Element
 
 Element is used to interact more directly with HTML. It tends to use divs and CSS transforms.
@@ -31,6 +39,8 @@ Element is used to interact more directly with HTML. It tends to use divs and CS
 ```elm
 Html.div [] [ Element.image 200 200 "cat.png" |> Element.toHtml ]
 ```
+
+---
 
 ## Combining
 
@@ -47,3 +57,5 @@ in
 ```
 
 Places a 100x100 red box in the centre of a 500x500 div.
+
+# Exercises!
