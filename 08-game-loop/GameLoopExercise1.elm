@@ -1,4 +1,4 @@
-{-| Demonstrate gravity in a game loop 
+{-| Move the box while it falls! 
 -}
 
 import Collage
@@ -8,23 +8,38 @@ import Html
 import Html.App
 import AnimationFrame
 import Time
+import Keyboard.Extra
 
 type alias Model = 
     { y : Int
     , velocity : Float
+    , keyboard : Keyboard.Extra.Model
     }
 
-type Msg = Nothing | Tick Time.Time
+type Msg = Nothing 
+    | Tick Time.Time
+    | KeyboardExtraMsg Keyboard.Extra.Msg
 
 init : (Model, Cmd Msg)
 init =
-    ({ y = 450, velocity = 0}, Cmd.none)
+    let
+        ( keyboardModel, keyboardCmd ) =
+            Keyboard.Extra.init
+        model = 
+            { y = 450
+            , velocity = 0
+            , keyboard = keyboardModel
+            }
+    in
+        (model, Cmd.map KeyboardExtraMsg keyboardCmd)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
         Nothing ->
             (model, Cmd.none)
+        KeyboardExtraMsg keyMsg ->
+            updateKeys keyMsg model
         Tick delta ->
             (step delta model, Cmd.none)
 
@@ -33,6 +48,7 @@ step delta model =
     model
         |> gravity delta
         |> physics delta
+        |> keyboard
 
 gravity : Float -> Model -> Model
 gravity delta model =
@@ -47,6 +63,20 @@ physics delta model =
                 |> max 0
                 |> round
     }
+
+keyboard : Model -> Model
+keyboard model =
+    -- You need to handle input here!
+    model
+
+updateKeys : Keyboard.Extra.Msg -> Model -> (Model, Cmd Msg)
+updateKeys keyMsg model =
+    let
+        ( keyboardModel, keyboardCmd ) =
+          Keyboard.Extra.update keyMsg model.keyboard
+    in
+        ({model | keyboard = keyboardModel}
+        , Cmd.map KeyboardExtraMsg keyboardCmd)
 
 view : Model -> Html.Html Msg
 view model =
@@ -65,7 +95,10 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    AnimationFrame.diffs (Tick << Time.inSeconds)
+    Sub.batch
+        [ Sub.map KeyboardExtraMsg Keyboard.Extra.subscriptions
+        , AnimationFrame.diffs (Tick << Time.inSeconds)
+        ]
 
 main : Program Never
 main =

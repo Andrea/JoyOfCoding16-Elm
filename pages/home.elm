@@ -56,7 +56,8 @@ content =
 
 ### Exercises
 
-- [Exercise 1](/examples/Exercise0401)
+- [Exercise 1](/examples/DrawABoxExercise1)
+- [Exercise 2](/examples/DrawABoxExercise2)
 
 ## 3. Move a Box
 
@@ -80,6 +81,10 @@ content =
 ## 6. Game Loops
 
 - [Gravity.elm](/examples/Gravity)
+
+### Exercises
+
+- [GameLoopExercise 1](/examples/GameLoopExercise1.elm)
 
 ## 7. Basic Animation and Physics
 
