@@ -42,7 +42,7 @@ txt f string =
 
 ```
 
-At least 3 different ways to deal with style.
+At least 3 different ways to deal with style, and at least other 3 libraries to work with CSS in a stronly typed manner.
 
 
  ## Cmd

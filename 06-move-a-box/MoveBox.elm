@@ -1,4 +1,5 @@
 import Collage exposing (..)
+import Color
 import Element exposing (..)
 import Html exposing (Html, div, text, p, img)
 import Html.App as App
@@ -12,17 +13,12 @@ type Direction
     | Right
     | Left
 
-type alias Cat =
+type alias Model =
     { x : Float
     , y : Float
-    , dir : Direction
+    , direction : Direction
     , velocityX: Float
     , velocityY : Float
-    }
-
-type alias Model =
-    { cat : Cat
-    , playerScore : Float
     , windowSize : Window.Size
     , keyboardModel : Keyboard.Extra.Model
     }
@@ -41,17 +37,19 @@ init =
             Keyboard.Extra.init
 
         model =
-            -- For brevity use the model constructors instead of {} for Cat and Window.Size
-            { cat = Cat 0 0 Right 0 0
-            , playerScore = 0
+            { x = 0 
+            , y = 0 
+            , direction = Right
+            , velocityX = 0 
+            , velocityY = 0            
             , windowSize = Window.Size 0 0
             , keyboardModel = keyboardModel
             }
 
         cmd =
             Cmd.batch
-                -- Normally We'd have to handle success and failure cases for the task, but here
-                -- we can use performFailproof as we know this will never fail.
+                -- Normally We'd have to handle success and failure cases for the task, 
+                -- but here we can use performFailproof as we know this will never fail.
                 [ Window.size |> Task.Extra.performFailproof WindowSize
                 , Cmd.map KeyboardExtraMsg keyboardCmd
                 ]
@@ -67,20 +65,15 @@ updateKeys keyMsg model=
           case Keyboard.Extra.arrowsDirection keyboardModel of
               Keyboard.Extra.West -> Left
               Keyboard.Extra.East -> Right
-              _ -> model.cat.dir
-
-      cat = model.cat
-      newCat =
-          { cat | dir = direction }
+              _ -> model.direction
   in
        { model
           | keyboardModel = keyboardModel
-          , cat = newCat
+          , direction = direction
         }
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-
     case msg of
         Play ->
             (  model,
@@ -105,46 +98,56 @@ step  model =
   model
     |> walk
 
-walkMulti : Float
-walkMulti = 300
-
 walk : Model -> Model
 walk model =
-  let
-    cat = model.cat
+  let    
+    walkMulti = 300
     keyz = Keyboard.Extra.arrows model.keyboardModel
-    newCat = {cat |
-                velocityX =  (toFloat keyz.x) * walkMulti
-                , dir =
-                     case Keyboard.Extra.arrowsDirection model.keyboardModel of
-                         Keyboard.Extra.West -> Left
-                         Keyboard.Extra.East -> Right
-                         _ -> model.cat.dir
-                   }
+    velX =  (toFloat keyz.x) * walkMulti
+    dir  = case Keyboard.Extra.arrowsDirection model.keyboardModel of
+               Keyboard.Extra.West -> Left
+               Keyboard.Extra.East -> Right
+               _ -> model.direction                   
   in
     { model |
-       cat = newCat
+         velocityY = velX
+       , direction = dir       
     }
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ (div [] [ renderGame model ])
-        ]
+    div [] [ Collage.collage 500 500 
+        -- Hint: change this so that instead of a box, we use an image (from Element)
+        -- path is "assets/obj_box001.png"
+        
+        --[  Collage.rect 100 100
+        --        |> Collage.filled Color.red 
+        --]
+          
+            [ image 70 70 "/assets/obj_box001.png"
+                  |> toForm
+                  |> move (model.x, model.y)
+            ]
+
+          -- hint : image returns an element, you can convert it to a form with
+          -- Collage.toForm, why should you do that?
+          -- Hint: We know that the model is updated in update, so x and y change
+          -- Collage has a nice function called move that can be used to move
+          --  a form, maybe you should use it
+          --  the signature for move is : 
+          --   (Float, Float) -> Collage.form -> Collage.form
+        |> Element.toHtml ]
 
 renderGame : Model -> Html Msg
 renderGame model =
-    let
-        cat = model.cat
-    in
-        div []
-            [ collage  640 480
-                [ image 70 70 "/assets/cat-running-right.gif"
-                      |> toForm
-                      |> move (cat.x, cat.y)
-                ]
-                |> Element.toHtml
+    div []
+        [ collage  640 480
+            [ image 70 70 "/assets/obj_box001.png"
+                  |> toForm
+                  |> move (model.x, model.y)
             ]
+            |> Element.toHtml
+        ]
 
 
 subscriptions : Model -> Sub Msg

@@ -99,7 +99,7 @@ renderGameOver model =
     div [ centeredDivStyle ]
         [ p [ attribute "style" titleStyle ] [ Html.text "GAME OVER!" ]
            -- Hint: add the gameover image that lives in /assets/gameover.jpg
-        -- use the Html.img
+        -- use the Html.img 
         -- "width" and "height" should be more or less 300px
         ]
 
@@ -123,9 +123,10 @@ txt f string =
     let
         textGreen =  rgb 160 20 190
     in
+        -- Hint: is there some way to make this font monospace?
+        --    there is one!! make sure you use it!!            
         Text.fromString string
-            |> Text.color textGreen
-            |> Text.monospace
+            |> Text.color textGreen            
             |> f
             |> leftAligned
             |> toHtml
