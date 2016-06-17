@@ -1,10 +1,10 @@
+import AnimationFrame
 import Collage exposing (..)
 import Color
 import Element exposing (..)
 import Html exposing (Html, div, text, p, img)
 import Html.App as App
 import Keyboard.Extra
-import Task.Extra
 import Time exposing (..)
 import Window
 
@@ -24,11 +24,8 @@ type alias Model =
     }
 
 type Msg
-    = WindowSize Window.Size
-    | KeyboardExtraMsg Keyboard.Extra.Msg
+    = KeyboardExtraMsg Keyboard.Extra.Msg
     | Tick Time.Time
-    | Play
-    | GameOver
 
 init : ( Model, Cmd Msg )
 init =
@@ -48,10 +45,7 @@ init =
 
         cmd =
             Cmd.batch
-                -- Normally We'd have to handle success and failure cases for the task, 
-                -- but here we can use performFailproof as we know this will never fail.
-                [ Window.size |> Task.Extra.performFailproof WindowSize
-                , Cmd.map KeyboardExtraMsg keyboardCmd
+                [ Cmd.map KeyboardExtraMsg keyboardCmd
                 ]
     in
         ( model, cmd )
@@ -74,44 +68,32 @@ updateKeys keyMsg model=
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+
     case msg of
-        Play ->
-            (  model,
-             Cmd.none )
-
-        GameOver ->
-            (  model
-            , Cmd.none )
-
-        WindowSize newSize ->
-            ( { model | windowSize = newSize }, Cmd.none )
-
         KeyboardExtraMsg keyMsg ->
             (updateKeys keyMsg model, Cmd.none)
 
         Tick delta ->
-              (step  model, Cmd.none)
+            (moveBox delta model, Cmd.none)
 
-
-step :  Model -> Model
-step  model =
-  model
-    |> walk
-
-walk : Model -> Model
-walk model =
+moveBox : Float -> Model -> Model
+moveBox delta model =
   let    
     walkMulti = 300
     keyz = Keyboard.Extra.arrows model.keyboardModel
+    x' = model.x + delta * model.velocityX
     velX =  (toFloat keyz.x) * walkMulti
+
     dir  = case Keyboard.Extra.arrowsDirection model.keyboardModel of
                Keyboard.Extra.West -> Left
                Keyboard.Extra.East -> Right
-               _ -> model.direction                   
+               _ -> model.direction    
+    _ = Debug.log "model.x" velX               
   in
     { model |
-         velocityY = velX
-       , direction = dir       
+         velocityX = velX
+       , direction = dir  
+       , x = x'
     }
 
 view : Model -> Html Msg
@@ -140,6 +122,7 @@ view model =
 
 renderGame : Model -> Html Msg
 renderGame model =
+
     div []
         [ collage  640 480
             [ image 70 70 "/assets/obj_box001.png"
@@ -154,6 +137,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Sub.map KeyboardExtraMsg Keyboard.Extra.subscriptions
+        , AnimationFrame.diffs (Tick << Time.inSeconds)
         ]
 
 
