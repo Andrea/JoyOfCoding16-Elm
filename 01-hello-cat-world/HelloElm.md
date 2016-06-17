@@ -1,13 +1,12 @@
 # Hello ~cat~ Elm World
 
-See [*The guide*](http://guide.elm-lang.org/)
 
 
 ## Introduction to Elm
 
 * Functional programming language that compiles to javascript
 * Strives for simplicity and targets UI  
-* Elm is a language, and architecture and a system with well defined boundaries with the idea that it does not give you runtime errors.
+* Elm is a language, and architecture and a system with well defined boundaries, at these boundaries is the only place where you can get you runtime errors.
 
 
 ### A taste of the language
@@ -97,6 +96,7 @@ tool http://klaftertief.github.io/package.elm-lang.org/
 *  An [FAQ](https://elm-community.github.io/elm-faq/#what-does--mean)
 * Want to chat with other people doing elm? Join the slack channel
 * More on package management [here](https://github.com/elm-lang/elm-package)
+* A post about the move to 0.17, [Farewell to FRP](http://elm-lang.org/blog/farewell-to-frp)
 
 ### Exercise
 
