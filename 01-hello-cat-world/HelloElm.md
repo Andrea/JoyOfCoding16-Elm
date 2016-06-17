@@ -1,7 +1,5 @@
 # Hello ~cat~ Elm World
 
-
-
 ## Introduction to Elm
 
 * Functional programming language that compiles to javascript
